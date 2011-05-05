@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="interdroid.vdb" android:versionCode="1" android:versionName="1.0">
+	<uses-sdk android:minSdkVersion="7" />
+
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+
+        <provider android:name="interdroid.vdb.content.VdbMainContentProvider"
+            android:authorities="interdroid.vdb.content.vdbmaincontentprovider"
+        />
+
+		<activity android:name="persistence.ui.RevisionPicker">
+			<intent-filter>
+				<action android:name="android.intent.action.PICK" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/repository" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="persistence.ui.CommitActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.COMMIT" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/branch.local" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="persistence.ui.ManageLocalBranchesActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.MANAGE_LOCAL_BRANCHES" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/repository" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="persistence.ui.AddBranchActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.ADD_BRANCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/repository" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="persistence.ui.AddRemoteActivity" />
+		<intent-filter>
+			<action android:name="interdroid.vdb.action.ADD_REMOTE" />
+			<category android:name="android.intent.category.DEFAULT" />
+			<data android:mimeType="vnd.interdroid.vdb.content/repository" />
+		</intent-filter>
+
+		<activity android:name="persistence.ui.EditRemoteActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.EDIT" />
+				<action android:name="interdroid.vdb.action.EDIT_REMOTE" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/remote" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="persistence.ui.ManageRepositoryActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.MANAGE_REPOSITORY" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/repository" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="persistence.ui.ManageRemotesActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.ManageRemotesActivity.MANAGE_REMOTES" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/repository" />
+			</intent-filter>
+		</activity>
+
+	</application>
+</manifest>
