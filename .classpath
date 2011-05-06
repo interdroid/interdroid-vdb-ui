@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="interdroid/vdb/persistence/ui/TestActivity.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="vdb_src"/>
@@ -10,6 +10,6 @@
 	<classpathentry kind="lib" path="/vdb/external/jsch-0.1.42.jar"/>
 	<classpathentry kind="lib" path="/vdb/external/org.eclipse.jgit-0.9.0-Fixed.jar"/>
 	<classpathentry kind="lib" path="/vdb/external/slf4j-api-1.5.5.jar"/>
-	<classpathentry kind="lib" path="/vdb/external/slf4j-on-android-1.5.5.jar"/>
+	<classpathentry kind="src" path="slf4android_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

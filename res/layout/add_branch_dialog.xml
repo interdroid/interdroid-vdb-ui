@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+<View android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:layout_weight="1" />
+
+<TextView android:text="Base:"
+ 	android:layout_width="fill_parent"
+ 	android:layout_height="wrap_content" />
+
+<LinearLayout android:orientation="horizontal" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+
+	<EditText android:id="@+id/revision"
+		android:text="- none -"
+	 	android:layout_width="fill_parent"
+	 	android:layout_height="fill_parent"
+	 	android:layout_weight="1"
+	 	android:singleLine="true"
+	 	android:editable="false"
+	 	android:focusable="false"
+	 	android:focusableInTouchMode="false"
+	 	android:ellipsize="end" />
+	 	
+	<Button android:id="@+id/pick_revision"
+		android:text="Pick" 
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		 />
+
+</LinearLayout>
+
+<TextView android:text="Branch name:"
+ 	android:layout_width="fill_parent"
+ 	android:layout_height="wrap_content" />
+ 	
+<EditText android:id="@+id/branch_name"
+	android:text=""
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:singleLine="true" />
+
+<View android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:layout_weight="1" />
+
+<LinearLayout android:orientation="horizontal" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+
+	<Button android:id="@+id/create"
+		android:text="Create copy"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="1" />
+
+	<Button android:id="@+id/cancel"
+		android:text="Cancel" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="1" />
+		
+</LinearLayout>
+
+</LinearLayout>

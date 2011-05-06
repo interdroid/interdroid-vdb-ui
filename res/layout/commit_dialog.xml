@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical">
+
+<ScrollView android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:layout_weight="1">
+<LinearLayout
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical">
+		
+	<TextView android:text="Author name:"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+	<EditText android:id="@+id/author_name"
+		android:text="Author name"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+		
+	<TextView android:text="Author email:"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+	<EditText android:id="@+id/author_email"
+		android:text="author@email.com"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+	
+	<TextView android:text="Message:"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+	<EditText android:id="@+id/message"
+		android:text=""
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1" />
+	
+</LinearLayout>
+</ScrollView>
+
+<LinearLayout
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal">
+
+	<Button android:text="Commit"
+		android:id="@+id/commit"
+		android:layout_width="wrap_content" 
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+	/>
+	
+	<Button android:text="Cancel"
+		android:id="@+id/cancel"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+	/>
+
+</LinearLayout>
+
+</LinearLayout>

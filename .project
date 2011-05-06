@@ -32,6 +32,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>slf4android_src</name>
+			<type>2</type>
+			<locationURI>_android_slf4android_eb6193e8/src</locationURI>
+		</link>
+		<link>
 			<name>vdb_src</name>
 			<type>2</type>
 			<locationURI>_android_vdb_1c774/src</locationURI>
