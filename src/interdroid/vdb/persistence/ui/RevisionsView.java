@@ -1,6 +1,7 @@
 package interdroid.vdb.persistence.ui;
 
 import interdroid.vdb.content.EntityUriBuilder;
+import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.ui.RevisionsView.OnRevisionClickListener.SelectAction;
 
@@ -238,12 +239,12 @@ implements OnItemLongClickListener, OnChildClickListener {
 	{
 		switch(groups_[groupPosition]) {
 		case LOCAL_BRANCHES:
-			return EntityUriBuilder.branchUri(vdbRepo_.getName(), branches_.get(childPosition));
+			return EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(), branches_.get(childPosition));
 		case REMOTE_BRANCHES:
-			return EntityUriBuilder.remoteBranchUri(vdbRepo_.getName(),
+			return EntityUriBuilder.remoteBranchUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(),
 					remoteBranches_.get(childPosition));
 		case COMMITS:
-			return EntityUriBuilder.commitUri(vdbRepo_.getName(),
+			return EntityUriBuilder.commitUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(),
 					commits_.get(childPosition).getName());
 		}
 		return null;

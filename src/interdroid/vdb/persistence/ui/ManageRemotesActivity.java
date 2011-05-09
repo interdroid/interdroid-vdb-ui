@@ -3,6 +3,7 @@ package interdroid.vdb.persistence.ui;
 import interdroid.vdb.Actions;
 import interdroid.vdb.content.EntityUriBuilder;
 import interdroid.vdb.content.EntityUriMatcher;
+import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.content.EntityUriMatcher.MatchType;
 import interdroid.vdb.content.EntityUriMatcher.UriMatch;
 import interdroid.vdb.persistence.api.VdbRepository;
@@ -303,7 +304,7 @@ public class ManageRemotesActivity extends ListActivity {
         switch (item.getItemId()) {
         case MENU_ITEM_EDIT:
         	Intent editIntent = new Intent(Intent.ACTION_EDIT,
-        			EntityUriBuilder.remoteUri(vdbRepo_.getName(), remote));
+        			EntityUriBuilder.remoteUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(), remote));
             startActivityForResult(editIntent, REQUEST_MODIFY_REMOTES);
             return true;
         case MENU_ITEM_DELETE:

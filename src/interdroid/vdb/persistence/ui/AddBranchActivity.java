@@ -4,6 +4,7 @@ import interdroid.vdb.content.EntityUriBuilder;
 import interdroid.vdb.content.EntityUriMatcher;
 import interdroid.vdb.content.EntityUriMatcher.MatchType;
 import interdroid.vdb.content.EntityUriMatcher.UriMatch;
+import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
 
@@ -114,7 +115,7 @@ public class AddBranchActivity extends Activity implements OnClickListener {
 				vdbRepo_.createBranch(name, chosenBase_.reference);
 
 				Intent result = new Intent(Intent.ACTION_DEFAULT,
-						EntityUriBuilder.branchUri(vdbRepo_.getName(), name));
+						EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(), name));
 				setResult(RESULT_OK, result);
 				finish();
 			} catch(IOException e) {
