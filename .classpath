@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="/vdb/external/org.eclipse.jgit-0.9.0-Fixed.jar"/>
 	<classpathentry kind="lib" path="/vdb/external/slf4j-api-1.5.5.jar"/>
 	<classpathentry kind="src" path="slf4android_src"/>
+	<classpathentry kind="src" path="vdb-avro_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
