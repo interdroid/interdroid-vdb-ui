@@ -2,11 +2,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="interdroid.vdb" android:versionCode="1" android:versionName="1.0">
 	<uses-sdk android:minSdkVersion="8" />
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+	<permission android:name="interdroid.vdb.permission.READ_DATABASE"
+		android:label="@string/perm_read_database" android:description="@string/perm_read_database_desc"
+		android:protectionLevel="dangerous"/>
+
+	<permission android:name="interdroid.vdb.permission.WRITE_DATABASE"
+		android:label="@string/perm_write_database" android:description="@string/perm_write_database_desc"
+		android:protectionLevel="dangerous"/>
 
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 
 		<provider android:name="interdroid.vdb.content.VdbMainContentProvider"
-			android:authorities="interdroid.vdb.content" />
+			android:authorities="interdroid.vdb.content" android:readPermission="interdroid.vdb.permission.READ_DATABASE"
+			android:writePermission="interdroid.vdb.permission.WRITE_DATABASE">
+		</provider>
+
+		<service android:name="interdroid.vdb.persistence.ui.GitService"
+			android:process=":git_daemon">
+			<intent-filter>
+				<action android:name="interdroid.vdb.GIT_SERVICE" />
+			</intent-filter>
+		</service>
 
 		<activity android:name="persistence.ui.RevisionPicker">
 			<intent-filter>
@@ -40,12 +58,13 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="persistence.ui.AddRemoteActivity" />
-		<intent-filter>
-			<action android:name="interdroid.vdb.action.ADD_REMOTE" />
-			<category android:name="android.intent.category.DEFAULT" />
-			<data android:mimeType="vnd.interdroid.vdb.content/repository" />
-		</intent-filter>
+		<activity android:name="persistence.ui.AddRemoteActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.ADD_REMOTE" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/repository" />
+			</intent-filter>
+		</activity>
 
 		<activity android:name="persistence.ui.EditRemoteActivity">
 			<intent-filter>
