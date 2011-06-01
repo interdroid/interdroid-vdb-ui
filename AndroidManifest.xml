@@ -6,11 +6,11 @@
 
 	<permission android:name="interdroid.vdb.permission.READ_DATABASE"
 		android:label="@string/perm_read_database" android:description="@string/perm_read_database_desc"
-		android:protectionLevel="dangerous"/>
+		android:protectionLevel="dangerous" />
 
 	<permission android:name="interdroid.vdb.permission.WRITE_DATABASE"
 		android:label="@string/perm_write_database" android:description="@string/perm_write_database_desc"
-		android:protectionLevel="dangerous"/>
+		android:protectionLevel="dangerous" />
 
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 
@@ -19,14 +19,14 @@
 			android:writePermission="interdroid.vdb.permission.WRITE_DATABASE">
 		</provider>
 
-		<service android:name="interdroid.vdb.persistence.ui.GitService"
+		<service android:name=".persistence.ui.GitService"
 			android:process=":git_daemon">
 			<intent-filter>
 				<action android:name="interdroid.vdb.GIT_SERVICE" />
 			</intent-filter>
 		</service>
 
-		<activity android:name="persistence.ui.RevisionPicker">
+		<activity android:name=".persistence.ui.RevisionPicker">
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -34,7 +34,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="persistence.ui.CommitActivity">
+		<activity android:name=".persistence.ui.CommitActivity">
 			<intent-filter>
 				<action android:name="interdroid.vdb.action.COMMIT" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -42,7 +42,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="persistence.ui.ManageLocalBranchesActivity">
+		<activity android:name=".persistence.ui.ManageLocalBranchesActivity">
 			<intent-filter>
 				<action android:name="interdroid.vdb.action.MANAGE_LOCAL_BRANCHES" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -50,7 +50,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="persistence.ui.AddBranchActivity">
+		<activity android:name=".persistence.ui.AddBranchActivity">
 			<intent-filter>
 				<action android:name="interdroid.vdb.action.ADD_BRANCH" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -58,15 +58,17 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="persistence.ui.AddRemoteActivity">
+		<!-- <activity android:name=".persistence.ui.AddRemoteActivity"> <intent-filter>
+			<action android:name="interdroid.vdb.action.ADD_REMOTE" /> <category android:name="android.intent.category.DEFAULT"
+			/> <data android:mimeType="vnd.interdroid.vdb.content/repository" /> </intent-filter>
+			</activity> -->
+
+		<activity android:name=".persistence.ui.EditRemoteActivity">
 			<intent-filter>
 				<action android:name="interdroid.vdb.action.ADD_REMOTE" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<data android:mimeType="vnd.interdroid.vdb.content/repository" />
 			</intent-filter>
-		</activity>
-
-		<activity android:name="persistence.ui.EditRemoteActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.EDIT" />
 				<action android:name="interdroid.vdb.action.EDIT_REMOTE" />
@@ -75,7 +77,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="persistence.ui.ManageRepositoryActivity">
+		<activity android:name=".persistence.ui.ManageRepositoryActivity">
 			<intent-filter>
 				<action android:name="interdroid.vdb.action.MANAGE_REPOSITORY" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -83,16 +85,46 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="persistence.ui.ManageRemotesActivity">
+		<activity android:name=".persistence.ui.ManageRemotesActivity">
 			<intent-filter>
-				<action android:name="interdroid.vdb.action.ManageRemotesActivity.MANAGE_REMOTES" />
+				<action android:name="interdroid.vdb.action.MANAGE_REMOTES" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<data android:mimeType="vnd.interdroid.vdb.content/repository" />
 			</intent-filter>
 		</activity>
 
-		<activity android:name="interdroid.vdb.persistence.ui.TestActivity"
-			android:label="@string/title_persistencebrowser">
+		<activity android:name=".persistence.ui.ManagePeersActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.MANAGE_PEERS" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".persistence.ui.AddPeerActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.ADD_PEER" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/peer" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".persistence.ui.VdbPreferences"
+			android:label="@string/title_preferences">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.MANAGE_PREFERENCES" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".persistence.ui.ManageRepositoriesActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.MANAGE_REPOSITORIES" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".persistence.ui.Raven"
+			android:label="@string/title_raven">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />

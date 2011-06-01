@@ -45,7 +45,7 @@ public class CommitActivity extends Activity implements OnClickListener {
         }
 
         try {
-			vdbBranch_ = VdbRepositoryRegistry.getInstance().getRepository(match.repositoryName)
+			vdbBranch_ = VdbRepositoryRegistry.getInstance().getRepository(this, match.repositoryName)
 					.getBranch(match.reference);
 		} catch (IOException e) {
 			throw new RuntimeException(e);

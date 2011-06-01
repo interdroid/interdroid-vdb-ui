@@ -1,11 +1,13 @@
 package interdroid.vdb.persistence.ui;
 
+import interdroid.vdb.R;
 import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
 import interdroid.vdb.persistence.ui.RevisionsView.GroupType;
 import interdroid.vdb.persistence.ui.RevisionsView.OnRevisionClickListener;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
@@ -16,6 +18,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class RevisionPicker extends Activity implements OnRevisionClickListener {
 	private static final Logger logger = LoggerFactory.getLogger(RevisionPicker.class);
@@ -62,7 +65,12 @@ public class RevisionPicker extends Activity implements OnRevisionClickListener 
             finish();
             return;
         }
-        vdbRepo_ = VdbRepositoryRegistry.getInstance().getRepository(pathSegments.get(0));
+        try {
+			vdbRepo_ = VdbRepositoryRegistry.getInstance().getRepository(this, pathSegments.get(0));
+		} catch (IOException e) {
+			logger.error("Error getting repository", e);
+			Toast.makeText(this, R.string.error_opening_repo, Toast.LENGTH_LONG);
+		}
         revView_ = new RevisionsView(getApplicationContext(), vdbRepo_, vGroups.toArray(new GroupType[0]));
         setContentView(revView_);
 

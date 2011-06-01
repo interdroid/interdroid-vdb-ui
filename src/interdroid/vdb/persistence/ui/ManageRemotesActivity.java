@@ -1,6 +1,7 @@
 package interdroid.vdb.persistence.ui;
 
 import interdroid.vdb.Actions;
+import interdroid.vdb.R;
 import interdroid.vdb.content.EntityUriBuilder;
 import interdroid.vdb.content.EntityUriMatcher;
 import interdroid.vdb.content.VdbMainContentProvider;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jgit.lib.ProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,8 +32,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class ManageRemotesActivity extends ListActivity {
+	private static final Logger logger = LoggerFactory
+			.getLogger(ManageRemotesActivity.class);
+
 	private VdbRepository vdbRepo_;
 	private static final int REQUEST_MODIFY_REMOTES = 1;
 	private static final int DIALOG_SYNCHRONIZE = 1;
@@ -48,7 +55,14 @@ public class ManageRemotesActivity extends ListActivity {
         	throw new RuntimeException("Invalid URI, can only add branches to a repository. "
         			+ intent.getData());
         }
-        vdbRepo_ = VdbRepositoryRegistry.getInstance().getRepository(match.repositoryName);
+        try {
+			vdbRepo_ = VdbRepositoryRegistry.getInstance().getRepository(this, match.repositoryName);
+		} catch (IOException e) {
+			logger.error("Error getting repository", e);
+			Toast.makeText(this, R.string.error_opening_repo, Toast.LENGTH_LONG);
+			finish();
+			return;
+		}
         buildUI();
 	}
 

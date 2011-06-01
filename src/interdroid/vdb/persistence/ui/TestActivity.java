@@ -2,6 +2,7 @@ package interdroid.vdb.persistence.ui;
 
 
 import interdroid.vdb.Actions;
+import interdroid.vdb.R;
 import interdroid.vdb.content.EntityUriBuilder;
 import interdroid.vdb.content.VdbMainContentProvider;
 //import interdroid.vdb.content.VdbMainContentProvider;
@@ -12,13 +13,20 @@ import interdroid.vdb.persistence.impl.VdbRepositoryImpl;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TestActivity extends Activity {
+	private static final Logger logger = LoggerFactory
+			.getLogger(TestActivity.class);
+
 	private static final int REQUEST_PICK_VERSION = 1;
 
 	@Override
@@ -45,7 +53,7 @@ public class TestActivity extends Activity {
 
 			try {
 				MergeHelper helper = new MergeHelper(
-						VdbRepositoryRegistry.getInstance().getRepository("google.notes")
+						VdbRepositoryRegistry.getInstance().getRepository(this, "google.notes")
 						.getBranch("temp"));
 				//helper.diff2("google.notes", "google.notes");
 			} catch (IOException e) {
@@ -53,8 +61,13 @@ public class TestActivity extends Activity {
 				e.printStackTrace();
 			}
 
-			VdbRepositoryImpl reg = (VdbRepositoryImpl)
-					VdbRepositoryRegistry.getInstance().getRepository("google.notes");
+			try {
+				VdbRepositoryImpl reg = (VdbRepositoryImpl)
+						VdbRepositoryRegistry.getInstance().getRepository(this, "google.notes");
+			} catch (IOException e) {
+				logger.error("Error getting repository", e);
+				Toast.makeText(this, R.string.error_opening_repo, Toast.LENGTH_LONG);
+			}
 
 			Intent intent;
 

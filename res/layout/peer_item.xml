@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:id="@+id/relativeLayout1"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<TextView android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true" android:layout_width="wrap_content"
+		android:id="@+id/peer_name" android:layout_height="wrap_content"
+		android:text="Name" style="@style/ListItemTitle"></TextView>
+	<TextView android:layout_width="wrap_content"
+		android:layout_alignParentTop="true" android:id="@+id/peer_email"
+		android:layout_toRightOf="@id/peer_name"
+		android:layout_height="wrap_content" android:text="Email"></TextView>
+	<TextView android:layout_width="wrap_content"
+		android:layout_alignParentLeft="true" android:layout_below="@id/peer_name"
+		android:layout_alignParentBottom="true" android:id="@+id/peer_repos"
+		android:layout_height="wrap_content" android:text="Repositories"></TextView>
+</RelativeLayout>

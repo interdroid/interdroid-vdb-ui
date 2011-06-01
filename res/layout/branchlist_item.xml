@@ -11,13 +11,14 @@
 			android:layout_height="32dp"
 	        android:layout_width="32dp"
 	        android:background="#00000000"
-	        android:src="@drawable/homefolder" 
+	        android:src="@drawable/homefolder"
 	        android:layout_gravity="center_vertical" />
 
 <TextView android:id="@+id/name"
+  style="@style/ListItemTitle"
   android:layout_width="fill_parent"
-  android:layout_height="wrap_content" 
-  android:paddingLeft="5px"
+  android:layout_height="wrap_content"
+  android:paddingLeft="32dp"
   android:layout_gravity="center_vertical" />
 
 </LinearLayout>

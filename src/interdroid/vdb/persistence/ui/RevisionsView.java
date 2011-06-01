@@ -10,6 +10,8 @@ import java.sql.Date;
 import java.util.Vector;
 
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import interdroid.vdb.R;
 
@@ -29,6 +31,9 @@ import android.widget.ExpandableListView.OnChildClickListener;
 
 public class RevisionsView extends ExpandableListView
 implements OnItemLongClickListener, OnChildClickListener {
+	private static final Logger logger = LoggerFactory
+			.getLogger(RevisionsView.class);
+
 	public enum GroupType {
 		LOCAL_BRANCHES,
 		REMOTE_BRANCHES,
@@ -185,6 +190,7 @@ implements OnItemLongClickListener, OnChildClickListener {
 
 	public RevisionsView(Context context, VdbRepository vdbRepo, GroupType... groupsToShow) {
 		super(context);
+		logger.debug("Constructing RevisionsView for repository: {}",  vdbRepo.getName());
 
 		vdbRepo_ = vdbRepo;
 		if (groupsToShow.length == 0) {

@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.URIish;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -31,6 +33,9 @@ import interdroid.vdb.Actions;
 import interdroid.vdb.R;
 
 public class EditRemoteActivity extends Activity implements OnClickListener {
+	private static final Logger logger = LoggerFactory
+			.getLogger(EditRemoteActivity.class);
+
 	private VdbRepository vdbRepo_;
 	private boolean addingNewRemote;
 	private RemoteInfo remoteInfo_;
@@ -43,8 +48,15 @@ public class EditRemoteActivity extends Activity implements OnClickListener {
 		final Intent intent = getIntent();
         UriMatch match = EntityUriMatcher.getMatch(intent.getData());
         if (match.repositoryName != null) {
-	        vdbRepo_ = VdbRepositoryRegistry.getInstance()
-	        	.getRepository(match.repositoryName);
+	        try {
+				vdbRepo_ = VdbRepositoryRegistry.getInstance()
+					.getRepository(this, match.repositoryName);
+			} catch (IOException e) {
+				logger.error("Error getting repository", e);
+				Toast.makeText(this, R.string.error_opening_repo, Toast.LENGTH_LONG);
+				finish();
+				return;
+			}
         }
 
         if (getIntent().getAction().equals(Actions.ACTION_ADD_REMOTE)) {
@@ -77,7 +89,7 @@ public class EditRemoteActivity extends Activity implements OnClickListener {
 	}
 
 	private static final String[] protocols__
-			= new String[] { "ssh", "http", "https", "git", "git+bluetooth" };
+			= new String[] { "ss", "ssh", "http", "https", "git", "git+bluetooth" };
 
 	private static final String[] type_labels__
 			= new String[] { "merge point", "hub mode" };

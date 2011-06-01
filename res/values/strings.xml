@@ -1,33 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2007 The Android Open Source Project
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
 
 <resources>
-    <string name="menu_delete">Delete</string>
-    <string name="menu_insert">Add note</string>
-    <string name="menu_revert">Revert</string>
-    <string name="menu_discard">Discard</string>
-
-    <string name="resolve_edit">Edit note</string>
-    <string name="resolve_title">Edit title</string>
-
-    <string name="title_create">Create note</string>
-    <string name="title_edit">Edit note</string>
-	<string name="title_notes_list">Note pad</string>
-	<string name="title_note">Note</string>
-	<string name="title_edit_title">Note title:</string>
 
 	<string name="app_name">VDB</string>
 
@@ -35,15 +8,40 @@
 
 	<string name="error_title">Error</string>
 	<string name="error_message">Error loading note</string>
+	<string name="error_invalid_uri">Error: Invalid URI</string>
+	<string name="error_fetching_repos">Error: Unable to fetch repository list</string>
+	<string name="error_opening_repo">Error: Unable to open repository list activity</string>
+	<string name="error_managing_repo">Error: Unable to manage repository</string>
+	<string name="error_adding_branch">Error: Unable to add a branch</string>
 
 	<string name="title_persistencebrowser">Persistence browser</string>
-	<string name="git_service_started">Started VDB Git Service</string>
+	<string name="title_preferences">VDB Preferences</string>
+	<string name="title_manage_repositories">Manage Repositories</string>
+	<string name="title_repository_action">Actions For This Repository</string>
+	<string name="title_raven">RAVEN</string>
+
+	<string name="action_open_repo">Open Repository</string>
+	<string name="action_manage_repo">Manage Repository</string>
+	<string name="action_delete_repo">Delete Repository</string>
+
+	<string name="git_service_started">VDB Git Service Running</string>
 	<string name="git_service_stopped">Stopped VDB Git Service</string>
 	<string name="git_service_label">VDB Git Service</string>
+	<string name="git_service_set_prefs">Select to set VDB Git Service Prefs</string>
+	<string name="git_service_found_new">Found a new peer: </string>
+	<string name="git_service_click_to_browse">Click to browse their repositories.</string>
 
 	<string name="perm_read_database">Read a VDB database</string>
 	<string name="perm_read_database_desc">Grants an application permission to read all databases within the VDB system.</string>
 	<string name="perm_write_database">Write a VDB database</string>
 	<string name="perm_write_database_desc">Grants an application permission to write all databases within the VDB system.</string>
 
+	<string name="sharing_preferences">Sharing Preferences</string>
+	<string name="pref_your_name">Name</string>
+	<string name="pref_your_name_desc">Your name as you would like it to appear in Commits</string>
+	<string name="pref_your_email">Email Address</string>
+	<string name="pref_your_email_desc">Your email as you would like it to appear in Commits</string>
+	<string name="pref_sharing_enabled">Enable Sharing</string>
+	<string name="pref_sharing_enabled_desc">Enables the sharing background service to synchronize your repositories with others.</string>
+	<string name="prefs_not_set">Preferences are not set!</string>
 </resources>

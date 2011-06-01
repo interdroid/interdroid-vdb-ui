@@ -2,4 +2,6 @@
 <config>
 	<repository name="interdroid.vdb.content.avro"
 		contentProvider="interdroid.vdb.content.avro.AvroProviderRegistry" />
+	<repository name="interdroid.vdb.persistence.content"
+		contentProvider="interdroid.vdb.persistence.content.PeerRegistry" />
 </config>

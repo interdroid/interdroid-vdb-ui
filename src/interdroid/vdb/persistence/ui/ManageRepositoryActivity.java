@@ -1,5 +1,8 @@
 package interdroid.vdb.persistence.ui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import interdroid.vdb.Actions;
 import interdroid.vdb.content.EntityUriMatcher;
 import interdroid.vdb.content.EntityUriMatcher.MatchType;
@@ -11,12 +14,16 @@ import android.os.Bundle;
 import android.widget.TabHost;
 
 public class ManageRepositoryActivity extends TabActivity {
+	private static final Logger logger = LoggerFactory
+			.getLogger(ManageRepositoryActivity.class);
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 
 		Intent intent = getIntent();
+		logger.debug("Managing repository: {}", intent.getData());
         UriMatch match = EntityUriMatcher.getMatch(intent.getData());
 
         if (match.type != MatchType.REPOSITORY) {

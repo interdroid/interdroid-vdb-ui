@@ -1,6 +1,7 @@
 package interdroid.vdb.persistence.ui;
 
 import interdroid.vdb.Actions;
+import interdroid.vdb.R;
 import interdroid.vdb.content.EntityUriMatcher;
 import interdroid.vdb.content.EntityUriMatcher.MatchType;
 import interdroid.vdb.content.EntityUriMatcher.UriMatch;
@@ -10,6 +11,9 @@ import interdroid.vdb.persistence.ui.RevisionsView.OnRevisionClickListener;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,8 +21,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class ManageLocalBranchesActivity extends Activity implements OnRevisionClickListener {
+	private static final Logger logger = LoggerFactory
+			.getLogger(ManageLocalBranchesActivity.class);
+
 	private VdbRepository vdbRepo_;
 	private static int REQUEST_ADD_BRANCH = 1;
 
@@ -27,13 +35,21 @@ public class ManageLocalBranchesActivity extends Activity implements OnRevisionC
         super.onCreate(savedInstanceState);
 
 		final Intent intent = getIntent();
+		logger.debug("Managing local branches of: {}", intent.getData());
         UriMatch match = EntityUriMatcher.getMatch(intent.getData());
 
         if (match.type != MatchType.REPOSITORY) {
         	throw new RuntimeException("Invalid URI, can only add branches to a repository. "
         			+ intent.getData());
         }
-        vdbRepo_ = VdbRepositoryRegistry.getInstance().getRepository(match.repositoryName);
+        logger.debug("Getting repository for: {}", match.repositoryName);
+        try {
+			vdbRepo_ = VdbRepositoryRegistry.getInstance().getRepository(this, match.repositoryName);
+		} catch (IOException e) {
+			logger.error("Unable to get repository: " + match.repositoryName, e);
+			Toast.makeText(this, R.string.error_managing_repo, Toast.LENGTH_LONG);
+		}
+        logger.debug("Got repository: {}", vdbRepo_);
 
         buildUI();
 	}

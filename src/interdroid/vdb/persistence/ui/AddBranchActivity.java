@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import interdroid.vdb.R;
 
@@ -25,6 +27,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class AddBranchActivity extends Activity implements OnClickListener {
+	private static final Logger logger = LoggerFactory
+			.getLogger(AddBranchActivity.class);
+
 	private static final int REQUEST_PICK_VERSION = 1;
 
 	private UriMatch chosenBase_;
@@ -44,7 +49,14 @@ public class AddBranchActivity extends Activity implements OnClickListener {
         	throw new RuntimeException("Invalid URI, can only add branches to a repository. "
         			+ intent.getData());
         }
-        vdbRepo_ = VdbRepositoryRegistry.getInstance().getRepository(match.repositoryName);
+        try {
+			vdbRepo_ = VdbRepositoryRegistry.getInstance().getRepository(this, match.repositoryName);
+		} catch (IOException e) {
+			logger.error("Unable to get repository", e);
+			Toast.makeText(this, R.string.error_adding_branch, Toast.LENGTH_LONG);
+			finish();
+			return;
+		}
 
 		buildUI();
 	}

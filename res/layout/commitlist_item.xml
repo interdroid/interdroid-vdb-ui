@@ -3,48 +3,50 @@
     	android:orientation="horizontal"
    		android:layout_width="fill_parent"
    		android:layout_height="wrap_content">
-  
+
 		<ImageView
 			android:layout_height="32dp"
 	        android:layout_width="32dp"
 	        android:background="#00000000"
-	        android:src="@drawable/footsteps" 
+	        android:src="@drawable/footsteps"
 	        android:layout_gravity="center_vertical"
 	        />
-	        
+
 	    <LinearLayout android:orientation="vertical"
 	   		android:layout_width="fill_parent"
 	   		android:layout_height="wrap_content">
 
-	        <TextView android:id="@+id/commit_sha1" 
+	        <TextView android:id="@+id/commit_sha1"
 			  	android:layout_width="fill_parent"
 			  	android:layout_height="wrap_content"
 				android:singleLine="true"
-				android:ellipsize="end" />
-	 		
-	   		
+				android:ellipsize="end"
+				style="@style/ListItemTitle"/>
+
+
 	   		<TextView android:id="@+id/title"
 			   		android:layout_width="fill_parent"
 		  			android:layout_height="wrap_content"
-		            android:padding="3dip" 
+		            android:padding="3dip"
 					android:singleLine="true"
-					android:ellipsize="end" />
-		            
+					android:ellipsize="end"
+					style="@style/ListItemTitle" />
+
 		  	<TextView android:id="@+id/created_at"
 		  			android:layout_width="fill_parent"
 		  			android:layout_height="wrap_content"
 		            android:text="Created at ||date|| "
-		            android:padding="3dip" 
+		            android:padding="3dip"
 		            android:singleLine="true" />
-		            
+
    		  	<TextView android:id="@+id/created_by"
    		  			android:layout_width="fill_parent"
 		  			android:layout_height="wrap_content"
 		            android:text="by ||author_name|| "
 		            android:padding="3dip"
-		            android:singleLine="true" /> 
+		            android:singleLine="true" />
 		            android:ellipsize="end" />
-		            
+
 	    </LinearLayout>
-	     
+
  </LinearLayout>
