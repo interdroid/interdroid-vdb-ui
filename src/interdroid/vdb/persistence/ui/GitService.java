@@ -387,6 +387,7 @@ public class GitService extends Service {
 		// The PendingIntent to launch our activity if the user selects this notification
 		Intent intent = new Intent(this, AddPeerActivity.class);
 		intent.putExtra(VdbPreferences.PREF_EMAIL, serviceName);
+		intent.putExtra(VdbPreferences.PREF_NAME, userName);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
 				intent, 0);
 
