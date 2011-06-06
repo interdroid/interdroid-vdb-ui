@@ -2,6 +2,7 @@ package interdroid.vdb.persistence.ui;
 
 import interdroid.vdb.Actions;
 import interdroid.vdb.R;
+import interdroid.vdb.content.EntityUriBuilder;
 import interdroid.vdb.content.EntityUriMatcher;
 import interdroid.vdb.content.EntityUriMatcher.MatchType;
 import interdroid.vdb.content.EntityUriMatcher.UriMatch;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -105,8 +107,21 @@ public class ManageLocalBranchesActivity extends Activity implements OnRevisionC
 
     private void runViewActivity(Uri uri)
     {
-		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-		startActivity(intent);
+    	try {
+    		Uri localUri = EntityUriBuilder.toNative(uri);
+    		logger.debug("Launching native URI: {}", localUri);
+    		Intent intent = new Intent(Intent.ACTION_VIEW, localUri);
+    		startActivity(intent);
+    	} catch (ActivityNotFoundException e) {
+    		try {
+    			logger.debug("Launching default URI: {}", uri);
+    			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+    			startActivity(intent);
+    		} catch (ActivityNotFoundException e2) {
+    			logger.error("No activity found.");
+    			Toast.makeText(this, R.string.error_activity_not_found, Toast.LENGTH_LONG);
+    		}
+    	}
     }
 
     @Override

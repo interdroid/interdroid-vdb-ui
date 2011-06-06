@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import interdroid.vdb.Actions;
+import interdroid.vdb.R;
 import interdroid.vdb.content.EntityUriMatcher;
 import interdroid.vdb.content.EntityUriMatcher.MatchType;
 import interdroid.vdb.content.EntityUriMatcher.UriMatch;
@@ -30,6 +31,8 @@ public class ManageRepositoryActivity extends TabActivity {
         	throw new RuntimeException("Not a vdb repository URI: "
         			+ intent.getData());
         }
+
+        setTitle(getText(R.string.title_manage_repository) + match.repositoryName);
 
 		final TabHost tabHost = getTabHost();
 

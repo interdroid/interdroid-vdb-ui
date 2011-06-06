@@ -35,6 +35,8 @@ public class RevisionPicker extends Activity implements OnRevisionClickListener 
 	{
         super.onCreate(savedInstanceState);
 
+        setTitle(getString(R.string.title_pick_branch));
+
         Intent intent = getIntent();
         if (intent.getData() == null) {
 			if (logger.isErrorEnabled())

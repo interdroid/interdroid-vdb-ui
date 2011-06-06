@@ -1,7 +1,6 @@
 package interdroid.vdb.persistence.ui;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -63,6 +62,10 @@ public class GitService extends Service {
 	// Flag to indicate if we are running.
 	private boolean mRunning;
 
+	private SharedPreferences mPrefs;
+
+	// TODO: Register preference listener just in case they change.
+
 	/**
 	 * Class for clients to access.  Because we know this service always
 	 * runs in the same process as its clients, we don't need to deal with
@@ -78,7 +81,17 @@ public class GitService extends Service {
 	public void onCreate() {
 		// Grab the notifications manager we will use to interact with the user
 		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		mPrefs = getSharedPreferences(VdbPreferences.PREFERENCES_NAME, MODE_PRIVATE);
 
+
+		if (!isConfigured()) {
+			showPrefsNotification();
+		} else {
+			startup();
+		}
+	}
+
+	private void registerListeners() {
 		// Register handlers so we start/stop/restart stuff at the right times
 		mBackgroundDataChangedListener = new BroadcastReceiver() {
 
@@ -111,18 +124,14 @@ public class GitService extends Service {
 		};
 		getApplicationContext().registerReceiver(mBackgroundDataChangedListener, new IntentFilter(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED));
 		getApplicationContext().registerReceiver(mConnectivityActionListener, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+	}
 
-		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		// Only startup if we are allowed to.
-		SharedPreferences prefs = getSharedPreferences(VdbPreferences.PREFERENCES_NAME, MODE_PRIVATE);
-		if (connectivityManager.getBackgroundDataSetting() && prefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true)) {
-			// Make sure name and email preferences are set
-			if (!(prefs.contains(VdbPreferences.PREF_EMAIL) && prefs.contains(VdbPreferences.PREF_NAME)) ) {
-				showPrefsNotification();
-			} else {
-				startup();
-			}
-		}
+	private boolean isConfigured() {
+		return hasPref(VdbPreferences.PREF_EMAIL) && hasPref(VdbPreferences.PREF_NAME);
+	}
+
+	private boolean hasPref(String prefName) {
+		return mPrefs.contains(prefName) && mPrefs.getString(prefName, null) != null && !mPrefs.getString(prefName, "").equals("");
 	}
 
 	private class GitSynchronizer {
@@ -248,10 +257,6 @@ public class GitService extends Service {
 
 	@Override
 	public void onDestroy() {
-		// Unregister our recievers
-		getApplicationContext().unregisterReceiver(this.mBackgroundDataChangedListener);
-		getApplicationContext().unregisterReceiver(this.mConnectivityActionListener);
-
 		shutdown();
 	}
 
@@ -262,47 +267,60 @@ public class GitService extends Service {
 		startup();
 	}
 
-	private void startup() {
-		try {
-			mSynchronizer = new GitSynchronizer(DEFAULT_INTERVAL);
-			startSmartsocketsDaemon();
-			//			startGitDaemon();
-		} catch (Exception e) {
-			logger.error("Error starting daemon.", e);
-		}
-
-		// Display a notification about us starting.  We put an icon in the status bar.
-		showNotification();
-
-		mRunning = true;
+	private boolean isStartable() {
+		return isConfigured() && ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getBackgroundDataSetting() && mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true);
 	}
 
-	private void shutdown() {
-		mRunning = false;
+	private synchronized void startup() {
+		if (!mRunning && isStartable()) {
+			registerListeners();
+			try {
+				mSynchronizer = new GitSynchronizer(DEFAULT_INTERVAL);
+				startSmartsocketsDaemon();
+				//			startGitDaemon();
+			} catch (Exception e) {
+				logger.error("Error starting daemon.", e);
+			}
 
-		// Stop the service.
-		mSynchronizer.stop();
+			// Display a notification about us starting.  We put an icon in the status bar.
+			showRunningNotification();
 
-		stopSmartsocketsDaemon();
-
-		// Unregister with the resolver
-		String socketName = getSocketName();
-		try {
-			NameResolver.getDefaultResolver().unregister(socketName);
-		} catch (IOException e) {
-			logger.error("Unable to unregister service.", e);
+			mRunning = true;
 		}
+	}
 
-		// Cancel the persistent notification.
-		mNM.cancel(NOTIFICATION);
+	private synchronized void shutdown() {
+		if (mRunning) {
+			mRunning = false;
 
-		// Tell the user we stopped.
-		Toast.makeText(this, R.string.git_service_stopped, Toast.LENGTH_SHORT).show();
+			// Unregister our recievers
+			getApplicationContext().unregisterReceiver(this.mBackgroundDataChangedListener);
+			getApplicationContext().unregisterReceiver(this.mConnectivityActionListener);
+
+
+			// Stop the service.
+			mSynchronizer.stop();
+
+			stopSmartsocketsDaemon();
+
+			// Unregister with the resolver
+			String socketName = getSocketName();
+			try {
+				NameResolver.getDefaultResolver().unregister(socketName);
+			} catch (IOException e) {
+				logger.error("Unable to unregister service.", e);
+			}
+
+			// Cancel the persistent notification.
+			mNM.cancel(NOTIFICATION);
+
+			// Tell the user we stopped.
+			Toast.makeText(this, R.string.git_service_stopped, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	private String getSocketName() {
-		SharedPreferences prefs = getSharedPreferences(VdbPreferences.PREFERENCES_NAME, MODE_PRIVATE);
-		return prefs.getString(VdbPreferences.PREF_EMAIL, "anonymous@localhost");
+		return mPrefs.getString(VdbPreferences.PREF_EMAIL, "anonymous@localhost");
 	}
 
 	@Override
@@ -317,7 +335,7 @@ public class GitService extends Service {
 	/**
 	 * Show a notification while this service is running.
 	 */
-	private void showNotification() {
+	private void showRunningNotification() {
 		CharSequence text = getText(R.string.git_service_started);
 
 		// Set the icon, scrolling text and timestamp

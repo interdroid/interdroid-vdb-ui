@@ -16,7 +16,11 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -27,6 +31,11 @@ public class ManageRepositoriesActivity extends ListActivity {
 	.getLogger(ManageRepositoriesActivity.class);
 
 	private List<Map<String, Object>> repos;
+	private SimpleAdapter mAdapter;
+
+	// Intent requests
+	private static final int CREATE_REPOSITORY = 1;
+	private static final int PICK_BRANCH = 2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +48,9 @@ public class ManageRepositoriesActivity extends ListActivity {
 		setTitle(getString(R.string.title_manage_repositories));
 
 		repos = getAllRepos();
-		setListAdapter(new SimpleAdapter(this, repos, R.layout.repo_item,
-				new String[] {VdbProviderRegistry.REPOSITORY_NAME}, new int[] {R.id.repoName}));
+		mAdapter = new SimpleAdapter(this, repos, R.layout.repo_item,
+				new String[] {VdbProviderRegistry.REPOSITORY_NAME}, new int[] {R.id.repoName});
+		setListAdapter(mAdapter);
 	}
 
 	private List<Map<String, Object>> getAllRepos() {
@@ -67,25 +77,28 @@ public class ManageRepositoriesActivity extends ListActivity {
 				switch (item) {
 				case 0:
 					try {
-						startActivity(new Intent(Intent.ACTION_PICK,
-								EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, repoName)));
+						logger.debug("Launching pick activity for: {}", repoName);
+						startActivityForResult(new Intent(Intent.ACTION_PICK,
+								EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, repoName)),
+								PICK_BRANCH);
 					} catch (Exception e) {
 						logger.error("Error opening repository", e);
-						Toast.makeText(ManageRepositoriesActivity.this, getString(R.string.error_opening_repo), Toast.LENGTH_LONG);
+						Toast.makeText(ManageRepositoriesActivity.this, getString(R.string.error_opening_repo), Toast.LENGTH_LONG).show();
 					}
 					break;
 				case 1:
 					try {
+						logger.debug("Launching manage for: {}", repoName);
 						startActivity(new Intent(Actions.ACTION_MANAGE_REPOSITORY,
-							EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, repoName)));
+								EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, repoName)));
 					} catch (Exception e) {
 						logger.error("Error managing repository", e);
-						Toast.makeText(ManageRepositoriesActivity.this, getString(R.string.error_managing_repo), Toast.LENGTH_LONG);
+						Toast.makeText(ManageRepositoriesActivity.this, getString(R.string.error_managing_repo), Toast.LENGTH_LONG).show();
 					}
 					break;
 				case 2:
 					// TODO: Add support for deleting repositories
-					Toast.makeText(ManageRepositoriesActivity.this, "Not yet supported", Toast.LENGTH_LONG);
+					Toast.makeText(ManageRepositoriesActivity.this, "Not yet supported", Toast.LENGTH_LONG).show();
 					break;
 				}
 			}
@@ -93,6 +106,76 @@ public class ManageRepositoriesActivity extends ListActivity {
 
 		AlertDialog alert = builder.create();
 		alert.show();
+	}
+
+	// Menu item ids
+	public static final int MENU_ITEM_ADD = Menu.FIRST;
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+
+		menu.add(0, MENU_ITEM_ADD, 0, "Add")
+		.setShortcut('3', 'a')
+		.setIcon(android.R.drawable.ic_menu_add);
+
+		return true;
+	}
+
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == MENU_ITEM_ADD) {
+			Intent addIntent = new Intent(Intent.ACTION_INSERT);
+			addIntent.setType(
+					"vnd.android.cursor.item/vnd.org.apache.avro.RecordDef");
+			logger.debug("Adding Repository");
+			this.startActivityForResult(addIntent, CREATE_REPOSITORY);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data)
+	{
+		switch (requestCode) {
+		case CREATE_REPOSITORY:
+			if (resultCode == RESULT_OK) {
+				refreshList();
+			}
+			break;
+		case PICK_BRANCH:
+			if (resultCode == RESULT_OK) {
+				try {
+					PackageManager pm = getPackageManager();
+					logger.debug("Starting native view for: {}", data.getData());
+					Intent i = new Intent(Intent.ACTION_VIEW, EntityUriBuilder.toNative(data.getData()));
+					List<ResolveInfo> infos = pm.queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+					logger.debug("Got infos: {}", infos.size());
+					for (ResolveInfo info : infos) {
+						logger.debug("Match: {}", info.activityInfo.applicationInfo.className);
+					}
+					startActivity(i);
+				} catch (Exception e) {
+					try {
+						logger.debug("Starting non-native view for: {}", data.getData());
+						startActivity(new Intent(Intent.ACTION_VIEW, data.getData()));
+					} catch (Exception e1) {
+						logger.error("View activity not found.", e);
+						Toast.makeText(this, R.string.error_activity_not_found, Toast.LENGTH_LONG).show();
+					}
+				}
+			}
+			break;
+		}
+	}
+
+	private void refreshList() {
+		List<Map<String, Object>> temp = getAllRepos();
+		repos.clear();
+		repos.addAll(temp);
+		mAdapter.notifyDataSetChanged();
 	}
 
 }

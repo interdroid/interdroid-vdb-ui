@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-
+// TODO: Need to change view when using ss:// protocol.
 public class ManagePeersActivity extends Activity {
 
 	static final int REQUEST_ADD_PEER = 1;
@@ -29,7 +29,8 @@ public class ManagePeersActivity extends Activity {
 
 	private void buildUI()
 	{
-		setTitle("Peer Manager");
+		setTitle(R.string.title_peer_manager);
+
 		setContentView(R.layout.peer_manager_dialog);
 
 		ListView list = (ListView) findViewById(R.id.peer_list);
