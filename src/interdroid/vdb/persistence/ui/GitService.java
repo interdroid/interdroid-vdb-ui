@@ -1,11 +1,15 @@
 package interdroid.vdb.persistence.ui;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import javax.jmdns.ServiceInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,8 +205,20 @@ public class GitService extends Service {
 						}
 					}
 				} else {
-					logger.info("Found possible new remote: {}", serviceName);
-					showNewRemoteNotification(serviceName);
+					// Ignore anonymous socket
+					if (!"anonymous@localhost".equals(serviceName)) {
+						logger.info("Found possible new remote: {}", serviceName);
+						ServiceInfo info;
+						String name = null;
+						try {
+							info = NameResolver.getDefaultResolver().resolveInfo(serviceName);
+							name = info.getPropertyString(VdbPreferences.PREF_NAME);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						showNewRemoteNotification(name, serviceName);
+					}
 				}
 			}
 		}
@@ -236,12 +252,13 @@ public class GitService extends Service {
 			mSmartSocketsDaemon.start();
 			logger.debug("SS Daemon Listening on: {}", mSmartSocketsDaemon.getAddress());
 			logger.debug("SS Daemon running: {}", mSmartSocketsDaemon.isRunning());
-			NameResolver.getDefaultResolver().register(getSocketName(), mSmartSocketsDaemon.getAddress());
+			Map<String, String> serviceInfo = new HashMap<String, String>();
+			serviceInfo.put(VdbPreferences.PREF_NAME, getUserName());
+			NameResolver.getDefaultResolver().register(getSocketName(), mSmartSocketsDaemon.getAddress(), serviceInfo);
 		} catch (Exception e) {
 			logger.error("Unable to initialize smart sockets daemon.", e);
 		}
 	}
-
 
 	private void stopSmartsocketsDaemon() {
 		mSmartSocketsDaemon.stop();
@@ -323,6 +340,10 @@ public class GitService extends Service {
 		return mPrefs.getString(VdbPreferences.PREF_EMAIL, "anonymous@localhost");
 	}
 
+	private String getUserName() {
+		return mPrefs.getString(VdbPreferences.PREF_NAME, "anonymous");
+	}
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
@@ -354,18 +375,18 @@ public class GitService extends Service {
 		mNM.notify(NOTIFICATION, notification);
 	}
 
-	private void showNewRemoteNotification(String name) {
+	private void showNewRemoteNotification(String userName, String serviceName) {
 
 		// In this sample, we'll use the same text for the ticker and the expanded notification
 		CharSequence text = getText(R.string.git_service_found_new);
 
 		// Set the icon, scrolling text and timestamp
-		Notification notification = new Notification(R.drawable.git, text + name,
+		Notification notification = new Notification(R.drawable.git, text + serviceName,
 				System.currentTimeMillis());
 
 		// The PendingIntent to launch our activity if the user selects this notification
 		Intent intent = new Intent(this, AddPeerActivity.class);
-		intent.putExtra(VdbPreferences.PREF_EMAIL, name);
+		intent.putExtra(VdbPreferences.PREF_EMAIL, serviceName);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
 				intent, 0);
 
