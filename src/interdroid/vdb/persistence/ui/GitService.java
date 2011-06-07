@@ -65,6 +65,8 @@ public class GitService extends Service {
 
 	// Flag to indicate if we are running.
 	private boolean mRunning;
+	// Show a notification when we set this false.
+	private boolean mRunnable = true;
 
 	private SharedPreferences mPrefs;
 
@@ -244,7 +246,7 @@ public class GitService extends Service {
 		}
 	}
 
-	private void startSmartsocketsDaemon() {
+	private boolean startSmartsocketsDaemon() {
 		try {
 			logger.debug("Initializing smart sockets git daemon");
 			mSmartSocketsDaemon = new SmartSocketsDaemon();
@@ -257,7 +259,9 @@ public class GitService extends Service {
 			NameResolver.getDefaultResolver().register(getSocketName(), mSmartSocketsDaemon.getAddress(), serviceInfo);
 		} catch (Exception e) {
 			logger.error("Unable to initialize smart sockets daemon.", e);
+			mRunnable = false;
 		}
+		return mRunnable;
 	}
 
 	private void stopSmartsocketsDaemon() {
@@ -285,7 +289,7 @@ public class GitService extends Service {
 	}
 
 	private boolean isStartable() {
-		return isConfigured() && ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getBackgroundDataSetting() && mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true);
+		return mRunnable && isConfigured() && ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getBackgroundDataSetting() && mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true);
 	}
 
 	private synchronized void startup() {
@@ -294,13 +298,15 @@ public class GitService extends Service {
 			try {
 				mSynchronizer = new GitSynchronizer(DEFAULT_INTERVAL);
 				startSmartsocketsDaemon();
+
+				// Display a notification about us starting.  We put an icon in the status bar.
+				showRunningNotification();
+
 				//			startGitDaemon();
 			} catch (Exception e) {
 				logger.error("Error starting daemon.", e);
+				mRunnable = false;
 			}
-
-			// Display a notification about us starting.  We put an icon in the status bar.
-			showRunningNotification();
 
 			mRunning = true;
 		}
