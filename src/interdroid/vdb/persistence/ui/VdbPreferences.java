@@ -5,28 +5,40 @@ import org.slf4j.LoggerFactory;
 
 import interdroid.vdb.R;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 
 public class VdbPreferences extends PreferenceActivity {
-	private static final Logger logger = LoggerFactory
-			.getLogger(VdbPreferences.class);
+	private static final Logger logger = LoggerFactory.getLogger(VdbPreferences.class);
 
+	public static final String PREFERENCES_NAME = "interdroid.vdb_preferences";
 
-    public static final String PREFERENCES_NAME = "interdroid.vdb_preferences";
+	// If you change these change the android:key value in vdb_preferences.xml
+	public static final String PREF_SHARING_ENABLED = "sharingEnabled";
+	public static final String PREF_NAME = "name";
+	public static final String PREF_EMAIL = "email";
 
-    // If you change these change the android:key value in vdb_preferences.xml
-    public static final String PREF_SHARING_ENABLED = "sharingEnabled";
-    public static final String PREF_NAME = "name";
-    public static final String PREF_EMAIL = "email";
-
-    // TODO: Add listener to synch toggle and start and stop service based on that.
+	// TODO: Add listener to synch toggle and start and stop service based on that.
 
 	@Override
-    protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.vdb_preferences);
-            logger.debug("Storing preferences to: " + getPreferenceManager().getSharedPreferencesName());
-    }
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		addPreferencesFromResource(R.xml.vdb_preferences);
+		logger.debug("Storing preferences to: " + getPreferenceManager().getSharedPreferencesName());
+		SharedPreferences prefs = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
+		if (prefSet(prefs, PREF_NAME) && prefSet(prefs, PREF_EMAIL)) {
+			setResult(RESULT_OK);
+		} else {
+			setResult(RESULT_CANCELED);
+		}
+	}
+
+	private boolean prefSet(SharedPreferences prefs, String prefName) {
+		// Has preference which is not null or the empty string
+		return prefs.contains(prefName) &&
+		null != prefs.getString(prefName, null) &&
+		!"".equals(prefs.getString(prefName, ""));
+	}
 }
