@@ -107,7 +107,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="persistence.ui.MangePeerActivity">
+		<activity android:name=".persistence.ui.EditPeerActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.EDIT" />
 				<category android:name="android.intent.category.DEFAULT" />
