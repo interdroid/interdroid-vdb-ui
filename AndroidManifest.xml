@@ -100,11 +100,18 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".persistence.ui.AddPeerActivity">
+		<activity android:name=".persistence.ui.TestActivity">
 			<intent-filter>
-				<action android:name="interdroid.vdb.action.ADD_PEER" />
+				<action android:name="interdroid.vdb.action.TEST" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<data android:mimeType="vnd.interdroid.vdb.content/peer" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="persistence.ui.MangePeerActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.EDIT" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />
 			</intent-filter>
 		</activity>
 
@@ -123,8 +130,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".persistence.ui.Raven"
-			android:label="@string/title_raven">
+		<activity android:name=".persistence.ui.Raven" android:label="@string/title_raven">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />

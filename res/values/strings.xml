@@ -14,6 +14,17 @@
 	<string name="error_managing_repo">Error: Unable to manage repository</string>
 	<string name="error_adding_branch">Error: Unable to add a branch</string>
 	<string name="error_activity_not_found">Error: No activity found to handle your request</string>
+	<string name="error_no_name">Error: The user name is missing</string>
+	<string name="error_no_email">Error: The email address is missing</string>
+	<string name="error_toggling_peer">Error: Unable to toggle sharing of remote peer</string>
+
+	<string name="label_name">Name:</string>
+	<string name="label_email">Email:</string>
+	<string name="label_repositories">Repositories:</string>
+	<string name="label_shared">Shared</string>
+	<string name="label_repository_name">Repository Name</string>
+	<string name="label_branches">Branches</string>
+	<string name="label_sharing">Sharing</string>
 
 	<string name="title_persistencebrowser">Persistence browser</string>
 	<string name="title_preferences">VDB Preferences</string>
@@ -23,6 +34,7 @@
 	<string name="title_pick_branch">Pick a Branch</string>
 	<string name="title_manage_repository">Manage Repository: </string>
 	<string name="title_peer_manager">Peer Manager</string>
+	<string name="title_manage_peer">Add Peer</string>
 
 	<string name="action_open_repo">Open Repository</string>
 	<string name="action_manage_repo">Manage Repository</string>

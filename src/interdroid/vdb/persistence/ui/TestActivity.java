@@ -8,6 +8,7 @@ import interdroid.vdb.content.VdbMainContentProvider;
 //import interdroid.vdb.content.VdbMainContentProvider;
 //import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
+import interdroid.vdb.persistence.content.PeerRegistry;
 import interdroid.vdb.persistence.impl.MergeHelper;
 import interdroid.vdb.persistence.impl.VdbRepositoryImpl;
 
@@ -38,8 +39,12 @@ public class TestActivity extends Activity {
         //		Uri.parse("content://" + VdbMainContentProvider.AUTHORITY + "/notes"));
         // startActivityForResult(intent, REQUEST_PICK_VERSION);
 
-		Intent intent = new Intent(Actions.ACTION_MANAGE_REPOSITORY,
-				EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, "google.notes"));
+//		Intent intent = new Intent(Actions.ACTION_MANAGE_REPOSITORY,
+//				EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, "google.notes"));
+
+        Intent intent = new Intent(Intent.ACTION_EDIT, PeerRegistry.URI);
+        intent.putExtra(VdbPreferences.PREF_EMAIL, "nick@sluggardy.net");
+        intent.putExtra(VdbPreferences.PREF_NAME, "Nick Palmer");
 		startActivity(intent);
 	}
 

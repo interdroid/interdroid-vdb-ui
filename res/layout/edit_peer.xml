@@ -1,0 +1,27 @@
+<RelativeLayout android:id="@+id/relativeLayout1"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
+	<TextView android:layout_width="match_parent" android:id="@+id/add_peer_label_name"
+		android:layout_height="wrap_content" android:text="@string/label_name" />
+	<EditText android:layout_below="@id/add_peer_label_name"
+		android:layout_width="match_parent" android:id="@+id/add_peer_name"
+		android:layout_height="wrap_content" />
+	<TextView android:layout_below="@id/add_peer_name"
+		android:id="@+id/add_peer_label_email" android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:text="@string/label_email" />
+	<EditText android:layout_below="@id/add_peer_label_email"
+		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:id="@+id/add_peer_email"></EditText>
+	<TextView android:layout_below="@id/add_peer_email"
+		android:id="@+id/add_peer_repository_label" android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:text="@string/label_repositories" />
+	<TextView android:paddingRight="2px" android:textSize="10sp" android:layout_width="wrap_content"
+		android:layout_below="@+id/add_peer_repository_label" android:text="@string/label_shared"
+		android:layout_height="wrap_content" android:id="@+id/add_peer_shared_label" />
+	<TextView android:textSize="10sp" android:paddingLeft="50sp" android:layout_width="wrap_content" android:text="@string/label_repository_name"
+		android:layout_height="wrap_content" android:layout_below="@+id/add_peer_repository_label"
+		android:layout_toRightOf="@id/add_peer_shared_label" />
+	<ListView android:layout_below="@id/add_peer_shared_label" android:id="@+id/add_peer_repo_list"
+		android:layout_height="wrap_content" android:layout_width="match_parent"
+		android:clickable="true" />
+</RelativeLayout>

@@ -1,0 +1,10 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:layout_width="match_parent" android:layout_height="wrap_content">
+	<CheckBox android:enabled="false" android:focusable="false"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/repoIsPeer"></CheckBox>
+	<TextView android:paddingLeft="10px" android:layout_width="match_parent" android:id="@+id/repoName"
+		android:layout_height="wrap_content" android:text="TextView"
+		style="@style/ListItemTitle"></TextView>
+</LinearLayout>
