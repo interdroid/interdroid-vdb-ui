@@ -17,6 +17,8 @@
 	<string name="error_no_name">Error: The user name is missing</string>
 	<string name="error_no_email">Error: The email address is missing</string>
 	<string name="error_toggling_peer">Error: Unable to toggle sharing of remote peer</string>
+	<string name="error_managing_peer">Error: Unable to manage the peer</string>
+	<string name="error_invalid_remote">Error: Invalid remote name</string>
 
 	<string name="label_name">Name:</string>
 	<string name="label_email">Email:</string>

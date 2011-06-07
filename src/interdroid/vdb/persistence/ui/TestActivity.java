@@ -42,7 +42,7 @@ public class TestActivity extends Activity {
 //		Intent intent = new Intent(Actions.ACTION_MANAGE_REPOSITORY,
 //				EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, "google.notes"));
 
-        Intent intent = new Intent(Intent.ACTION_EDIT, PeerRegistry.URI);
+        Intent intent = new Intent(this, EditPeerActivity.class);
         intent.putExtra(VdbPreferences.PREF_EMAIL, "nick@sluggardy.net");
         intent.putExtra(VdbPreferences.PREF_NAME, "Nick Palmer");
 		startActivity(intent);

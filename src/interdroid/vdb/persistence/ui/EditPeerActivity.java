@@ -15,9 +15,14 @@ import interdroid.vdb.content.VdbProviderRegistry;
 import interdroid.vdb.persistence.api.RemoteInfo;
 import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
+import interdroid.vdb.persistence.content.PeerRegistry;
+import interdroid.vdb.persistence.content.PeerRegistry.Peer;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -40,6 +45,8 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 	private EditText mName;
 	private SimpleAdapter mAdapter;
 
+	private Uri mUri;
+
 	private List<Map<String, Object>> mRepos;
 
 	private VdbProviderRegistry mProviderRegistry;
@@ -51,16 +58,64 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 	{
 		super.onCreate(savedInstanceState);
 		// TODO: Make this a full edit activity
-		String email = getIntent().getExtras().getString(VdbPreferences.PREF_EMAIL);
-		String name = getIntent().getExtras().getString(VdbPreferences.PREF_NAME);
-		if (name == null) {
-			Toast.makeText(this, R.string.error_no_name, Toast.LENGTH_LONG).show();
-			finish();
+		Intent intent = getIntent();
+		mUri = intent.getData();
+		logger.debug("Got request to edit peer: {}", mUri);
+
+		String email;
+		String name;
+
+		if (mUri == null) {
+			Bundle extras = intent.getExtras();
+			email = extras.getString(VdbPreferences.PREF_EMAIL);
+			name = extras.getString(VdbPreferences.PREF_NAME);
+
+			if (name == null) {
+				Toast.makeText(this, R.string.error_no_name, Toast.LENGTH_LONG).show();
+				finish();
+				return;
+			}
+			if (email == null) {
+				Toast.makeText(this, R.string.error_no_email, Toast.LENGTH_LONG).show();
+				finish();
+				return;
+			}
+			// Does this peer already exist?
+			Cursor c = getContentResolver().query(PeerRegistry.URI, null, Peer.EMAIL + "=?", new String[] {email}, null);
+			if (c != null && c.moveToFirst()) {
+				logger.warn("Request to add existing peer.");
+					mUri = Uri.withAppendedPath(PeerRegistry.URI,
+							String.valueOf(c.getInt(c.getColumnIndex(Peer._ID))));
+			} else {
+				logger.debug("Adding to peers: {} {}", name, email);
+				ContentValues values = new ContentValues();
+				values.put(Peer.NAME, name);
+				values.put(Peer.EMAIL, email);
+				mUri = getContentResolver().insert(PeerRegistry.URI, values);
+			}
+			if (c != null) {
+				c.close();
+			}
+		} else {
+			logger.debug("Querying for peer.");
+			Cursor c = getContentResolver().query(mUri, null, null, null, null);
+			if (c != null && c.getCount() == 1 && c.moveToFirst()) {
+				name = c.getString(c.getColumnIndex(Peer.NAME));
+				email = c.getString(c.getColumnIndex(Peer.EMAIL));
+				c.close();
+			} else {
+				Toast.makeText(this, R.string.error_managing_peer, Toast.LENGTH_LONG).show();
+				if (c != null) {
+					c.close();
+				}
+				finish();
+				return;
+			}
 		}
-		if (email == null) {
-			Toast.makeText(this, R.string.error_no_email, Toast.LENGTH_LONG).show();
-			finish();
-		}
+
+		// TODO: Register preference change listener
+		setupLocalName();
+
 		try {
 			mProviderRegistry = new VdbProviderRegistry(this);
 		} catch (IOException e) {
@@ -68,10 +123,17 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 			Toast.makeText(this, R.string.error_fetching_repos, Toast.LENGTH_LONG).show();
 			finish();
 		}
-		// TODO: Register preference change listener
-		setupLocalName();
 
 		buildUI(name, email);
+	}
+
+	protected void onPause() {
+		super.onPause();
+
+		// Save name back to peer.
+		ContentValues values = new ContentValues();
+		values.put(Peer.NAME, mName.getText().toString());
+		getContentResolver().update(mUri, values, null, null);
 	}
 
 	private void setupLocalName() {
@@ -181,7 +243,7 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 				String desc = mName.getText().toString();
 				String name = mEmail.getText().toString();
 				if (name == null || !Repository.isValidRefName("refs/remote/" + name)) {
-					Toast.makeText(this, "Invalid remote name.", Toast.LENGTH_LONG).show();
+					Toast.makeText(this, R.string.error_invalid_remote, Toast.LENGTH_LONG).show();
 					return;
 				}
 
