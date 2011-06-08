@@ -20,6 +20,8 @@
 	<string name="error_managing_peer">Error: Unable to manage the peer</string>
 	<string name="error_invalid_remote">Error: Invalid remote name</string>
 	<string name="error_sync_in_progress">Error: Sync already in progress</string>
+	<string name="error_loading_remotes">Error: Unable to load remote information</string>
+	<string name="error_removing_remote">Error: Unable to remove remote from repository</string>
 
 	<string name="label_name">Name:</string>
 	<string name="label_email">Email:</string>
@@ -28,6 +30,8 @@
 	<string name="label_repository_name">Repository Name</string>
 	<string name="label_branches">Branches</string>
 	<string name="label_sharing">Sharing</string>
+	<string name="label_peer">Peer</string>
+	<string name="label_hub">Hub</string>
 
 	<string name="title_persistencebrowser">Persistence browser</string>
 	<string name="title_preferences">VDB Preferences</string>
@@ -50,6 +54,8 @@
 	<string name="action_remove_peer">Remove Peer</string>
 	<string name="action_edit_hub">Edit Hub</string>
 	<string name="action_add_hub">Add Hub</string>
+	<string name="action_sync_hub">Sync Hub</string>
+	<string name="action_remove_hub">Remove Hub</string>
 
 	<string name="git_service_started">VDB Git Service Running</string>
 	<string name="git_service_stopped">Stopped VDB Git Service</string>

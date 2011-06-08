@@ -7,6 +7,7 @@ import interdroid.vdb.content.EntityUriMatcher;
 import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.content.EntityUriMatcher.MatchType;
 import interdroid.vdb.content.EntityUriMatcher.UriMatch;
+import interdroid.vdb.persistence.api.RemoteInfo;
 import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
 import interdroid.vdb.persistence.content.PeerRegistry;
@@ -14,9 +15,10 @@ import interdroid.vdb.persistence.content.PeerRegistry.Peer;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.slf4j.Logger;
@@ -36,8 +38,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 public class ManageRemotesActivity extends ListActivity implements OnItemClickListener {
@@ -45,12 +47,21 @@ public class ManageRemotesActivity extends ListActivity implements OnItemClickLi
 	.getLogger(ManageRemotesActivity.class);
 
 	private VdbRepository vdbRepo_;
+
+	private List<Map<String, Object>> mData;
+
+	private SimpleAdapter mAdapter;
 	private static final int REQUEST_MODIFY_REMOTES = 1;
 	private static final int REQUEST_ADD_PEER = 2;
 	private static final int DIALOG_SYNCHRONIZE = 1;
 	private static final int MSG_PROGRESS = 1, MSG_START = 2, MSG_DONE = 3;
 	// TODO: This should be a preference?
 	private static final int CANCEL_TIMEOUT = 5000 /* ms */;
+
+	private static final String REPO_DESC = "desc";
+	private static final String REPO_NAME = "name";
+	private static final String REPO_TYPE = "type";
+	private static final String REPO_ADDRESS = "addr";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,28 +85,47 @@ public class ManageRemotesActivity extends ListActivity implements OnItemClickLi
 		buildUI();
 	}
 
-	private List<String> buildRemotesList()
-	{
-		Set<String> remotes;
-		try {
-			remotes = vdbRepo_.listRemotes();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return Collections.list(Collections.enumeration(remotes));
+	private void refreshList() {
+		updateRemotesMap(mData);
+		mAdapter.notifyDataSetChanged();
 	}
 
-	private void refreshList()
+	private void buildList()
 	{
-		// TODO: Need to track if it is a hub or a peer based on the URIish
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, buildRemotesList());
-		setListAdapter(adapter);
+		mData =  updateRemotesMap(new ArrayList<Map<String, Object>>());
+		mAdapter = new SimpleAdapter(this, mData,
+				R.layout.manage_repo_item,
+				new String [] {REPO_TYPE, REPO_NAME, REPO_DESC, REPO_ADDRESS},
+				new int [] {R.id.manage_repo_type, R.id.manage_repo_name, R.id.manage_repo_desc, R.id.manage_repo_address});
+		setListAdapter(mAdapter);
+	}
+
+	private List<Map<String, Object>> updateRemotesMap(List<Map<String, Object>> list) {
+		list.clear();
+		try {
+			for (String remote : vdbRepo_.listRemotes()) {
+				final RemoteInfo info = vdbRepo_.getRemoteInfo(remote);
+				Map<String, Object> data = new HashMap<String, Object>();
+				data.put(REPO_DESC, info.getDescription());
+				data.put(REPO_NAME, info.getName());
+				logger.debug("Type: {}", info.getRemoteUri().getScheme());
+				data.put(REPO_TYPE,
+						// TODO: Constant here for SmartSocketsScheme?
+						"ss".equals(info.getRemoteUri().getScheme())  ?
+								getString(R.string.label_peer) : getString(R.string.label_hub));
+				data.put(REPO_ADDRESS, info.getRemoteUri());
+				list.add(data);
+			}
+		} catch (IOException e) {
+			Toast.makeText(this, R.string.error_loading_remotes, Toast.LENGTH_LONG).show();
+			finish();
+		}
+		return list;
 	}
 
 	private void buildUI()
 	{
-		refreshList();
+		buildList();
 		getListView().setOnCreateContextMenuListener(this);
 		getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		getListView().setOnItemClickListener(this);
@@ -333,31 +363,37 @@ public class ManageRemotesActivity extends ListActivity implements OnItemClickLi
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		final int EDIT_PEER = 0;
-		final int EDIT_HUB = 1;
-		final int SYNC_PEER = 2;
-		final int REMOVE_PEER = 3;
+		final int EDIT = 0;
+		final int SYNC = 1;
+		final int REMOVE = 2;
 
-		final CharSequence[] items = {getString(R.string.action_edit_peer), getString(R.string.action_edit_hub),
-				getString(R.string.action_sync_peer), getString(R.string.action_remove_peer)};
-
-		final String remote = (String) getListAdapter().getItem(position);
+		@SuppressWarnings("unchecked")
+		final Map<String, Object> data = (Map<String, Object>) getListAdapter().getItem(position);
+		final String remote = (String) data.get(REPO_NAME);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getString(R.string.title_peer_actions));
+		final Intent editIntent;
+
+		CharSequence[] items;
+		if (data.get(REPO_TYPE).equals(getString(R.string.label_peer))) {
+			items = new String[] {getString(R.string.action_edit_peer),
+					getString(R.string.action_sync_peer), getString(R.string.action_remove_peer)};
+			editIntent = new Intent(Intent.ACTION_EDIT, PeerRegistry.URI);
+		} else {
+			items = new String[] {getString(R.string.action_edit_hub),
+					getString(R.string.action_sync_hub), getString(R.string.action_remove_hub)};
+			editIntent = new Intent(Intent.ACTION_EDIT,
+					EntityUriBuilder.remoteUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(), remote));
+		}
+
 		builder.setItems(items, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int item) {
 				switch (item) {
-				case EDIT_PEER:
-					Intent addIntent = new Intent(Intent.ACTION_EDIT, PeerRegistry.URI);
-					startActivityForResult(addIntent, REQUEST_MODIFY_REMOTES);
-					break;
-				case EDIT_HUB:
-					Intent editIntent = new Intent(Intent.ACTION_EDIT,
-							EntityUriBuilder.remoteUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(), remote));
+				case EDIT:
 					startActivityForResult(editIntent, REQUEST_MODIFY_REMOTES);
 					break;
-				case SYNC_PEER:
+				case SYNC:
 					// TODO: Queue sync with service instead.
 					if (syncThread_ != null && !syncThread_.isDoneOrCanceled()) {
 						// do not allow multiple syncs at the same time
@@ -368,15 +404,14 @@ public class ManageRemotesActivity extends ListActivity implements OnItemClickLi
 						showDialog(DIALOG_SYNCHRONIZE);
 					}
 					break;
-				case REMOVE_PEER:
-					// TODO: Add support for deleting repositories
-					Toast.makeText(ManageRemotesActivity.this, "Not yet supported", Toast.LENGTH_LONG).show();
-					// Need to itterate over all repositories and remove from all remotes...
-					//		        	try {
-					//						vdbRepo_.deleteRemote(remote);
-					//					} catch (IOException e) {
-					//						throw new RuntimeException(e);
-					//					}
+				case REMOVE:
+					try {
+						vdbRepo_.deleteRemote(remote);
+						refreshList();
+					} catch (IOException e) {
+						logger.error("Unable to remove remote.", e);
+						Toast.makeText(ManageRemotesActivity.this, R.string.error_removing_remote, Toast.LENGTH_LONG).show();
+					}
 					break;
 				}
 			}

@@ -89,12 +89,12 @@ public class EditRemoteActivity extends Activity implements OnClickListener {
 	}
 
 	private static final String[] protocols__
-			= new String[] { "ss", "ssh", "http", "https", "git", "git+bluetooth" };
+			= new String[] { "ssh", "http", "https", "git", "git+bluetooth" };
 
 	private static final String[] type_labels__
-			= new String[] { "merge point", "hub mode" };
+			= new String[] { /*"merge point", */ "hub mode" };
 	private static final RemoteType[] types__
-			= new RemoteType[] {RemoteType.MERGE_POINT, RemoteType.HUB};
+			= new RemoteType[] {/*RemoteType.MERGE_POINT, */ RemoteType.HUB};
 
 	private Spinner spnProtocol_, spnType_;
 	private EditText editName_, editDescription_, editHostname_, editUsername_,

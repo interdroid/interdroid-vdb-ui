@@ -19,7 +19,6 @@ import interdroid.vdb.persistence.content.PeerRegistry;
 import interdroid.vdb.persistence.content.PeerRegistry.Peer;
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -273,7 +272,9 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 			info.setDescription(userName);
 			info.setName(userEmail);
 			info.setOurNameOnRemote(localName);
-			info.setRemoteUri(new URIish("ss:/" + userEmail));
+			URIish uri = new URIish().setScheme("ss").setHost(userEmail).setPath("/" + repo.getName());
+			logger.debug("URI is: {}", uri);
+			info.setRemoteUri(uri);
 			try {
 				repo.saveRemote(info);
 				logger.info("Repo added.");
