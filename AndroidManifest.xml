@@ -95,6 +95,11 @@
 
 		<activity android:name=".persistence.ui.ManagePeersActivity">
 			<intent-filter>
+				<action android:name="android.intent.action.PICK" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />
+			</intent-filter>
+			<intent-filter>
 				<action android:name="interdroid.vdb.action.MANAGE_PEERS" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
@@ -111,7 +116,8 @@
 			<intent-filter>
 				<action android:name="android.intent.action.EDIT" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<data android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />
+				<data
+					android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />
 			</intent-filter>
 		</activity>
 

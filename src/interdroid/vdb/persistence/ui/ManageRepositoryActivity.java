@@ -32,7 +32,7 @@ public class ManageRepositoryActivity extends TabActivity {
         			+ intent.getData());
         }
 
-        setTitle(getText(R.string.title_manage_repository) + match.repositoryName);
+        setTitle(getText(R.string.title_manage_repository) + " " + match.repositoryName);
 
 		final TabHost tabHost = getTabHost();
 

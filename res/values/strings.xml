@@ -19,6 +19,7 @@
 	<string name="error_toggling_peer">Error: Unable to toggle sharing of remote peer</string>
 	<string name="error_managing_peer">Error: Unable to manage the peer</string>
 	<string name="error_invalid_remote">Error: Invalid remote name</string>
+	<string name="error_sync_in_progress">Error: Sync already in progress</string>
 
 	<string name="label_name">Name:</string>
 	<string name="label_email">Email:</string>
@@ -34,13 +35,21 @@
 	<string name="title_repository_action">Actions For This Repository</string>
 	<string name="title_raven">RAVEN</string>
 	<string name="title_pick_branch">Pick a Branch</string>
-	<string name="title_manage_repository">Manage Repository: </string>
+	<string name="title_manage_repository">Manage Repository:</string>
 	<string name="title_peer_manager">Peer Manager</string>
 	<string name="title_manage_peer">Add Peer</string>
+	<string name="title_pick_peer">Pick a Peer</string>
+	<string name="title_peer_actions">Peer Actions</string>
 
 	<string name="action_open_repo">Open Repository</string>
 	<string name="action_manage_repo">Manage Repository</string>
 	<string name="action_delete_repo">Delete Repository</string>
+	<string name="action_edit_peer">Edit Peer</string>
+	<string name="action_add_peer">Add Peer</string>
+	<string name="action_sync_peer">Sync Peer</string>
+	<string name="action_remove_peer">Remove Peer</string>
+	<string name="action_edit_hub">Edit Hub</string>
+	<string name="action_add_hub">Add Hub</string>
 
 	<string name="git_service_started">VDB Git Service Running</string>
 	<string name="git_service_stopped">Stopped VDB Git Service</string>

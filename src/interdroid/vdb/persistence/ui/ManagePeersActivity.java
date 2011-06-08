@@ -30,17 +30,31 @@ public class ManagePeersActivity extends Activity implements OnItemClickListener
 	static final int REQUEST_ADD_PEER = 1;
 	private List<Map<String, Object>> mPeers;
 
+	private boolean mPickMode = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		Intent data = getIntent();
+		if (Intent.ACTION_PICK.equals(data.getAction())) {
+			logger.debug("Running in pick mode!");
+			mPickMode = true;
+			// Assume we are canceled
+			setResult(RESULT_CANCELED);
+		}
 
 		buildUI();
 	}
 
 	private void buildUI()
 	{
-		setTitle(R.string.title_peer_manager);
+		if (mPickMode) {
+			setTitle(R.string.title_pick_peer);
+		} else {
+			setTitle(R.string.title_peer_manager);
+		}
 
 		setContentView(R.layout.peer_manager_dialog);
 
@@ -84,9 +98,19 @@ public class ManagePeersActivity extends Activity implements OnItemClickListener
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		logger.debug("Got request to manage: {} {}", position, mPeers.get(position).get(Peer._ID));
-		startActivity(new Intent(Intent.ACTION_EDIT, Uri.withAppendedPath(PeerRegistry.URI,
-				String.valueOf(mPeers.get(position).get(Peer._ID)))));
+		if (mPickMode) {
+			logger.debug("Picked: {} {}", position, mPeers.get(position).get(Peer._ID));
+			Intent result = new Intent();
+			result.setData(Uri.withAppendedPath(PeerRegistry.URI, String.valueOf(mPeers.get(position).get(Peer._ID))));
+			result.putExtra(Peer.NAME, (String)mPeers.get(position).get(Peer.NAME));
+			result.putExtra(Peer.EMAIL, (String)mPeers.get(position).get(Peer.EMAIL));
+			setResult(RESULT_OK, result);
+			finish();
+		} else {
+			logger.debug("Got request to manage: {} {}", position, mPeers.get(position).get(Peer._ID));
+			startActivity(new Intent(Intent.ACTION_EDIT, Uri.withAppendedPath(PeerRegistry.URI,
+					String.valueOf(mPeers.get(position).get(Peer._ID)))));
+		}
 	}
 
 }

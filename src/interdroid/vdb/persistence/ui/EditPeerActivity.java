@@ -19,6 +19,7 @@ import interdroid.vdb.persistence.content.PeerRegistry;
 import interdroid.vdb.persistence.content.PeerRegistry.Peer;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -39,7 +40,7 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 	private static final Logger logger = LoggerFactory
 	.getLogger(EditPeerActivity.class);
 
-	private static final int SET_PREFERENCES = 0;
+	static final int ACTIVITY_SET_PREFERENCES = 0x10101;
 
 	private EditText mEmail;
 	private EditText mName;
@@ -50,8 +51,6 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 	private List<Map<String, Object>> mRepos;
 
 	private VdbProviderRegistry mProviderRegistry;
-
-	private String mLocalName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -114,7 +113,8 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 		}
 
 		// TODO: Register preference change listener
-		setupLocalName();
+		// Make sure name preference exists
+		getLocalName(this);
 
 		try {
 			mProviderRegistry = new VdbProviderRegistry(this);
@@ -136,19 +136,16 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 		getContentResolver().update(mUri, values, null, null);
 	}
 
-	private void setupLocalName() {
-		SharedPreferences prefs = getSharedPreferences(VdbPreferences.PREFERENCES_NAME, MODE_PRIVATE);
+	static String getLocalName(Activity context) {
+		String localName = null;
+		SharedPreferences prefs = context.getSharedPreferences(VdbPreferences.PREFERENCES_NAME, MODE_PRIVATE);
 		if (prefs.contains(VdbPreferences.PREF_EMAIL)) {
-			mLocalName = prefs.getString(VdbPreferences.PREF_EMAIL, null);
-			if (mLocalName == null
-					|| !Repository.isValidRefName("refs/remote/" + mLocalName)) {
-				Toast.makeText(this, R.string.prefs_not_set, Toast.LENGTH_LONG).show();
-				startActivityForResult(new Intent(this, VdbPreferences.class), SET_PREFERENCES);
-			}
+			localName = prefs.getString(VdbPreferences.PREF_EMAIL, null);
 		} else {
-			Toast.makeText(this, R.string.prefs_not_set, Toast.LENGTH_LONG).show();
-			startActivityForResult(new Intent(this, VdbPreferences.class), SET_PREFERENCES);
+			Toast.makeText(context, R.string.prefs_not_set, Toast.LENGTH_LONG).show();
+			context.startActivityForResult(new Intent(context, VdbPreferences.class), ACTIVITY_SET_PREFERENCES);
 		}
+		return localName;
 	}
 
 	private ListView getListView() {
@@ -237,27 +234,7 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 			if (isPeer) {
 				repo.deleteRemote(mEmail.getText().toString());
 			} else {
-				RemoteInfo info = new RemoteInfo();
-				info.setType(RemoteInfo.RemoteType.HUB);
-
-				String desc = mName.getText().toString();
-				String name = mEmail.getText().toString();
-				if (name == null || !Repository.isValidRefName("refs/remote/" + name)) {
-					Toast.makeText(this, R.string.error_invalid_remote, Toast.LENGTH_LONG).show();
-					return;
-				}
-
-				info.setDescription(desc);
-				info.setName(name);
-				info.setOurNameOnRemote(mLocalName);
-				info.setRemoteUri(new URIish("ss://" + mEmail.getText().toString()));
-				try {
-					repo.saveRemote(info);
-					logger.info("Repo added.");
-				} catch (Exception e) {
-					logger.error("Error saving remote", e);
-					Toast.makeText(this, R.string.error_toggling_peer, Toast.LENGTH_LONG).show();
-				}
+				addPeerToRepository(this, mName.getText().toString(), mEmail.getText().toString(), repo);
 			}
 			data.put(VdbProviderRegistry.REPOSITORY_IS_PEER, !isPeer);
 			mAdapter.notifyDataSetChanged();
@@ -270,7 +247,46 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 		}
 	}
 
+	/**
+	 * May launch SET_PREFERENCES preference activity for result. Callers must be able to handle this result.
+	 *
+	 * @param context The activity calling this method
+	 * @param userName The users name
+	 * @param userEmail The users email used as the address for a ss:/ uri
+	 * @param localName Our name on the remote
+	 * @param repo The repository to add to
+	 * @return true If we successfully added.
+	 * @throws URISyntaxException
+	 */
+	public static boolean addPeerToRepository(Activity context, String userName, String userEmail, VdbRepository repo)
+			throws URISyntaxException {
+		boolean result = false;
+		String localName = getLocalName(context);
+
+		RemoteInfo info = new RemoteInfo();
+		info.setType(RemoteInfo.RemoteType.HUB);
+
+		if (userEmail == null || !Repository.isValidRefName("refs/remote/" + userEmail)) {
+			Toast.makeText(context, R.string.error_invalid_remote, Toast.LENGTH_LONG).show();
+		} else {
+
+			info.setDescription(userName);
+			info.setName(userEmail);
+			info.setOurNameOnRemote(localName);
+			info.setRemoteUri(new URIish("ss:/" + userEmail));
+			try {
+				repo.saveRemote(info);
+				logger.info("Repo added.");
+				result = true;
+			} catch (Exception e) {
+				logger.error("Error saving remote", e);
+				Toast.makeText(context, R.string.error_toggling_peer, Toast.LENGTH_LONG).show();
+			}
+		}
+		return result;
+	}
+
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		setupLocalName();
+		getLocalName(this);
 	}
 }
