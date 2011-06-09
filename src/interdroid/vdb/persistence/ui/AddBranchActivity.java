@@ -19,6 +19,7 @@ import interdroid.vdb.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +32,8 @@ public class AddBranchActivity extends Activity implements OnClickListener {
 			.getLogger(AddBranchActivity.class);
 
 	private static final int REQUEST_PICK_VERSION = 1;
+
+	static final String EXTRA_SELECTED_VERSION = "version";
 
 	private UriMatch chosenBase_;
 	private VdbRepository vdbRepo_;
@@ -59,6 +62,10 @@ public class AddBranchActivity extends Activity implements OnClickListener {
 		}
 
 		buildUI();
+		if (intent.hasExtra(EXTRA_SELECTED_VERSION)) {
+			Uri version = Uri.parse(intent.getStringExtra(EXTRA_SELECTED_VERSION));
+			setChosenRevision(version);
+		}
 	}
 
 	private void buildUI()
@@ -82,23 +89,30 @@ public class AddBranchActivity extends Activity implements OnClickListener {
 	protected void onActivityResult (int requestCode, int resultCode, Intent data)
 	{
 		if (resultCode == RESULT_OK && requestCode == REQUEST_PICK_VERSION) {
-			chosenBase_ = EntityUriMatcher.getMatch(data.getData());
-			String text;
-			switch(chosenBase_.type) {
-			case COMMIT:
-				text = "sha1: " + chosenBase_.reference;
-				break;
-			case LOCAL_BRANCH:
-				text = "local: " + chosenBase_.reference;
-				break;
-			case REMOTE_BRANCH:
-				text = "remote: " + chosenBase_.reference;
-				break;
-			default:
-				throw new IllegalStateException("Invalid URI returned by RevisionPicker");
-			}
-			editRevision_.setText(text);
+			setChosenRevision(data.getData());
 		}
+	}
+
+	private void setChosenRevision(Uri version) {
+		chosenBase_ = EntityUriMatcher.getMatch(version);
+		String text;
+		switch(chosenBase_.type) {
+		case COMMIT:
+			text = "sha1: " + chosenBase_.reference;
+			break;
+		case LOCAL_BRANCH:
+			text = "local: " + chosenBase_.reference;
+			break;
+		case REMOTE_BRANCH:
+			text = "remote: " + chosenBase_.reference;
+			break;
+		default:
+			Toast.makeText(this, R.string.error_invalid_version, Toast.LENGTH_LONG).show();
+			editRevision_.setText(null);
+			chosenBase_ = null;
+			return;
+		}
+		editRevision_.setText(text);
 	}
 
 	@Override

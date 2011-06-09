@@ -51,6 +51,8 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 
 	private VdbProviderRegistry mProviderRegistry;
 
+	private boolean mAddMode = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -64,6 +66,8 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 		String name;
 
 		if (mUri == null) {
+			mAddMode = true;
+
 			Bundle extras = intent.getExtras();
 			email = extras.getString(VdbPreferences.PREF_EMAIL);
 			name = extras.getString(VdbPreferences.PREF_NAME);
@@ -153,7 +157,11 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 
 	private void buildUI(String name, String email)
 	{
-		setTitle(R.string.title_manage_peer);
+		if (mAddMode) {
+			setTitle(R.string.title_add_peer);
+		} else {
+			setTitle(R.string.title_edit_peer);
+		}
 		setContentView(R.layout.edit_peer);
 
 		// Has to come before first refresh to setup header before adapter is set.
@@ -212,7 +220,7 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 	private List<Map<String, Object>> getAllRepos(String email) {
 		List<Map<String, Object>> result = null;
 		try {
-			result = mProviderRegistry.getPeerRepositories(email);
+			result = mProviderRegistry.getAllRepositories(email);
 		} catch (IOException e) {
 			logger.error("Error fetching list of repositories: ", e);
 			Toast.makeText(this, R.string.error_fetching_repos, Toast.LENGTH_LONG).show();
