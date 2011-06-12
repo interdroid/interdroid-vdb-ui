@@ -8,7 +8,8 @@ import interdroid.vdb.content.EntityUriMatcher.MatchType;
 import interdroid.vdb.content.EntityUriMatcher.UriMatch;
 import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
-import interdroid.vdb.persistence.ui.RevisionsView.OnRevisionClickListener;
+import interdroid.vdb.persistence.ui.BranchExpandableListAdapter.GroupType;
+import interdroid.vdb.persistence.ui.BranchExpandableListAdapter.OnRevisionClickListener;
 
 import java.io.IOException;
 
@@ -24,6 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 public class ManageLocalBranchesActivity extends Activity implements OnRevisionClickListener {
@@ -32,6 +34,9 @@ public class ManageLocalBranchesActivity extends Activity implements OnRevisionC
 
 	private VdbRepository vdbRepo_;
 	private static int REQUEST_ADD_BRANCH = 1;
+
+	private ExpandableListView revView_;
+	private BranchExpandableListAdapter revViewAdapter_;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +62,14 @@ public class ManageLocalBranchesActivity extends Activity implements OnRevisionC
 		buildUI();
 	}
 
-	private RevisionsView revView_;
-
 	private void buildUI()
 	{
-		revView_ = new RevisionsView(this, vdbRepo_);
+		revView_ = new ExpandableListView(getBaseContext());
 		setContentView(revView_);
 		revView_.setOnCreateContextMenuListener(this);
-		revView_.setOnRevisionClickListener(this);
+		revViewAdapter_ = new BranchExpandableListAdapter(getBaseContext(), vdbRepo_, GroupType.LOCAL_BRANCHES, GroupType.REMOTE_BRANCHES);
+		revView_.setAdapter(revViewAdapter_);
+		revViewAdapter_.setOnRevisionClickListener(this);
 	}
 
 	// Menu item ids
@@ -81,7 +86,7 @@ public class ManageLocalBranchesActivity extends Activity implements OnRevisionC
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
-		menu.add(0, MENU_ITEM_ADD, 0, getString(R.string.action_view_branch))
+		menu.add(0, MENU_ITEM_ADD, 0, getString(R.string.action_add_branch))
 		.setShortcut('1', 'a')
 		.setIcon(android.R.drawable.ic_menu_add);
 
@@ -92,7 +97,7 @@ public class ManageLocalBranchesActivity extends Activity implements OnRevisionC
 	protected void onActivityResult (int requestCode, int resultCode, Intent data)
 	{
 		if (requestCode == REQUEST_ADD_BRANCH && resultCode == RESULT_OK) {
-			revView_.refresh();
+			revViewAdapter_.notifyDataSetChanged();
 		}
 	}
 
@@ -123,58 +128,57 @@ public class ManageLocalBranchesActivity extends Activity implements OnRevisionC
 			startActivityForResult(addIntent, REQUEST_ADD_BRANCH);
 			return true;
 		}
-		Uri selectedUri = revView_.getSelectedUri();
-		if (selectedUri == null) {
-			return true;
-		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
-	public void onRevisionClick(RevisionsView view, final Uri revUri, SelectAction type)
+	public void onRevisionClick(Uri revUri)
 	{
 		// Short click just open
-		if (type == SelectAction.CLICK) {
-			runViewActivity(revUri);
-		} else {
-			// Long click show an alert menu
-			final CharSequence[] items = {getString(R.string.action_view_branch),
-					getString(R.string.action_create_branch), getString(R.string.action_delete_branch)};
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(getString(R.string.title_branch_action));
-			builder.setItems(items, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int item) {
-					switch (item) {
-					case 0:
-						runViewActivity(revUri);
-						break;
-					case 1:
-						Intent addIntent = new Intent(Actions.ACTION_ADD_BRANCH,
-								getIntent().getData());
-						addIntent.putExtra(AddBranchActivity.EXTRA_SELECTED_VERSION, revUri.toString());
-						startActivityForResult(addIntent, REQUEST_ADD_BRANCH);
-						break;
-					case 2:
-						UriMatch match = EntityUriMatcher.getMatch(revUri);
-						if (match.type != MatchType.LOCAL_BRANCH) {
-							Toast.makeText(ManageLocalBranchesActivity.this, R.string.error_cant_delete_nonlocal_branch, Toast.LENGTH_LONG).show();
-						} else {
-							try {
-								vdbRepo_.deleteBranch(match.reference);
-								revView_.refresh();
-							} catch (IOException e) {
-								Toast.makeText(ManageLocalBranchesActivity.this, R.string.error_delete_branch, Toast.LENGTH_LONG).show();
-							}
-						}
-						break;
-					}
-				}
-			});
-
-			AlertDialog alert = builder.create();
-			alert.show();
-			}
-		}
-
+		logger.debug("Revision click {}", revUri);
+		runViewActivity(revUri);
 	}
+
+	@Override
+	public void onRevisionLongClick(final Uri revUri) {
+		logger.debug("Revision long click {}", revUri);
+		// Long click show an alert menu
+		final CharSequence[] items = {getString(R.string.action_view_branch),
+				getString(R.string.action_add_branch), getString(R.string.action_delete_branch)};
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getString(R.string.title_branch_action));
+		builder.setItems(items, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int item) {
+				switch (item) {
+				case 0:
+					runViewActivity(revUri);
+					break;
+				case 1:
+					Intent addIntent = new Intent(Actions.ACTION_ADD_BRANCH,
+							getIntent().getData());
+					addIntent.putExtra(AddBranchActivity.EXTRA_SELECTED_VERSION, revUri.toString());
+					startActivityForResult(addIntent, REQUEST_ADD_BRANCH);
+					break;
+				case 2:
+					UriMatch match = EntityUriMatcher.getMatch(revUri);
+					if (match.type != MatchType.LOCAL_BRANCH) {
+						Toast.makeText(ManageLocalBranchesActivity.this, R.string.error_cant_delete_nonlocal_branch, Toast.LENGTH_LONG).show();
+					} else {
+						try {
+							vdbRepo_.deleteBranch(match.reference);
+							revViewAdapter_.notifyDataSetChanged();
+						} catch (IOException e) {
+							Toast.makeText(ManageLocalBranchesActivity.this, R.string.error_delete_branch, Toast.LENGTH_LONG).show();
+						}
+					}
+					break;
+				}
+			}
+		});
+
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+
+}

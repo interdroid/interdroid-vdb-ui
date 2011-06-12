@@ -71,6 +71,7 @@ public class GitService extends Service {
 	private SharedPreferences mPrefs;
 
 	// TODO: Register preference listener just in case they change.
+	//       Notify in the preferences via a broadcast change.
 
 	/**
 	 * Class for clients to access.  Because we know this service always
@@ -187,17 +188,22 @@ public class GitService extends Service {
 			if (registry != null) {
 				if (hasPeer(serviceName)) {
 					for (String name : registry.getAllRepositoryNames()) {
+						logger.info("Synchronizing repository: {}", name);
 						VdbRepository repo;
 						try {
 							repo = repos.getRepository(GitService.this, name);
 							try {
+								// Get the list of all remotes for this repository
 								Set<String> remotes = repo.listRemotes();
+								// Check to see if the list contains the peer we are synching with
 								if (remotes.contains(serviceName)) {
-									logger.info("Synching with: {}", serviceName);
+									logger.info("Synching: {} with: {}", name, serviceName);
 									// TODO: Hook progress monitor to notification bar
 									repo.pullFromRemote(serviceName, null);
 									repo.pushToRemote(serviceName, null);
 									logger.info("Finished sync with: {}", serviceName);
+								} else {
+									logger.info("{} is not peer for {}", serviceName, name);
 								}
 							} catch (IOException e) {
 								logger.error("Unable to list remotes for repo: " + name, e);
@@ -225,6 +231,11 @@ public class GitService extends Service {
 			}
 		}
 
+		/**
+		 * Returns true if we have this peer in our list of peers
+		 * @param serviceName The name of the peer
+		 * @return true if the peer is in our list of peers.
+		 */
 		private boolean hasPeer(String serviceName) {
 			Cursor c = null;
 			try {
@@ -258,14 +269,17 @@ public class GitService extends Service {
 			serviceInfo.put(VdbPreferences.PREF_NAME, getUserName());
 			NameResolver.getDefaultResolver().register(getSocketName(), mSmartSocketsDaemon.getAddress(), serviceInfo);
 		} catch (Exception e) {
-			logger.error("Unable to initialize smart sockets daemon.", e);
 			mRunnable = false;
+			stopSmartsocketsDaemon();
+			logger.error("Unable to initialize smart sockets daemon.", e);
 		}
 		return mRunnable;
 	}
 
 	private void stopSmartsocketsDaemon() {
-		mSmartSocketsDaemon.stop();
+		if (mSmartSocketsDaemon != null) {
+			mSmartSocketsDaemon.stop();
+		}
 	}
 
 	@Override
