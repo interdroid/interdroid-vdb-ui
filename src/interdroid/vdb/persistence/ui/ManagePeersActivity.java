@@ -61,7 +61,7 @@ public class ManagePeersActivity extends Activity implements OnItemClickListener
 		ListView list = (ListView) findViewById(R.id.peer_list);
 		mPeers = getAllPeers();
 		list.setAdapter(new SimpleAdapter(this, mPeers, R.layout.peer_item,
-				new String[] {Peer.NAME, Peer.EMAIL}, new int[] {R.id.peer_name, R.id.peer_email}));
+				new String[] {Peer.NAME, Peer.EMAIL, Peer.DEVICE}, new int[] {R.id.peer_name, R.id.peer_email, R.id.peer_device}));
 		list.setClickable(true);
 		list.setOnItemClickListener(this);
 	}
@@ -70,17 +70,19 @@ public class ManagePeersActivity extends Activity implements OnItemClickListener
 		Cursor c = null;
 		ArrayList<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		try {
-			c = getContentResolver().query(PeerRegistry.URI, new String[]{Peer._ID, Peer.NAME, Peer.EMAIL}, null, null, null);
+			c = getContentResolver().query(PeerRegistry.URI, new String[]{Peer._ID, Peer.NAME, Peer.EMAIL, Peer.DEVICE}, null, null, null);
 			if (c != null) {
 				int idIndex = c.getColumnIndex(Peer._ID);
 				int nameIndex = c.getColumnIndex(Peer.NAME);
 				int emailIndex = c.getColumnIndex(Peer.EMAIL);
+				int deviceIndex = c.getColumnIndex(Peer.DEVICE);
 				while (c.moveToNext()) {
 					@SuppressWarnings({ "rawtypes", "unchecked" })
 					HashMap<String, Object> data = new HashMap();
 					data.put(Peer._ID, c.getInt(idIndex));
 					data.put(Peer.NAME, c.getString(nameIndex));
 					data.put(Peer.EMAIL, c.getString(emailIndex));
+					data.put(Peer.DEVICE, c.getString(deviceIndex));
 					result.add(data);
 				}
 			}
@@ -104,6 +106,7 @@ public class ManagePeersActivity extends Activity implements OnItemClickListener
 			result.setData(Uri.withAppendedPath(PeerRegistry.URI, String.valueOf(mPeers.get(position).get(Peer._ID))));
 			result.putExtra(Peer.NAME, (String)mPeers.get(position).get(Peer.NAME));
 			result.putExtra(Peer.EMAIL, (String)mPeers.get(position).get(Peer.EMAIL));
+			result.putExtra(Peer.DEVICE, (String)mPeers.get(position).get(Peer.DEVICE));
 			setResult(RESULT_OK, result);
 			finish();
 		} else {

@@ -20,5 +20,6 @@
 	<classpathentry kind="lib" path="/smartsockets/external/jstun-0.6.1.jar"/>
 	<classpathentry kind="lib" path="/smartsockets/external/sbbi-upnplib-1.0.2.jar"/>
 	<classpathentry kind="lib" path="/smartsockets/external/trilead-ssh2-r13339-CJ.jar"/>
+	<classpathentry kind="src" path="interdroid-util_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

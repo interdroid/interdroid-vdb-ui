@@ -32,6 +32,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>interdroid-util_src</name>
+			<type>2</type>
+			<locationURI>_android_interdroid_util_3028128f/src</locationURI>
+		</link>
+		<link>
 			<name>org.eclipse.jgit_resources</name>
 			<type>2</type>
 			<locationURI>_android_org_eclipse_jgit_ef541d39/resources</locationURI>

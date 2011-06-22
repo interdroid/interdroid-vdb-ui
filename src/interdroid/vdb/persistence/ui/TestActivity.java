@@ -5,10 +5,7 @@ import interdroid.vdb.Actions;
 import interdroid.vdb.R;
 import interdroid.vdb.content.EntityUriBuilder;
 import interdroid.vdb.content.VdbMainContentProvider;
-//import interdroid.vdb.content.VdbMainContentProvider;
-//import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
-import interdroid.vdb.persistence.content.PeerRegistry;
 import interdroid.vdb.persistence.impl.MergeHelper;
 import interdroid.vdb.persistence.impl.VdbRepositoryImpl;
 
@@ -35,6 +32,9 @@ public class TestActivity extends Activity {
 	{
         super.onCreate(savedInstanceState);
 
+		// Start the GIT service in the background.
+		startService(new Intent("interdroid.vdb.GIT_SERVICE"));
+
         // Intent intent = new Intent(Intent.ACTION_PICK,
         //		Uri.parse("content://" + VdbMainContentProvider.AUTHORITY + "/notes"));
         // startActivityForResult(intent, REQUEST_PICK_VERSION);
@@ -42,10 +42,12 @@ public class TestActivity extends Activity {
 //		Intent intent = new Intent(Actions.ACTION_MANAGE_REPOSITORY,
 //				EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, "google.notes"));
 
-        Intent intent = new Intent(this, EditPeerActivity.class);
-        intent.putExtra(VdbPreferences.PREF_EMAIL, "nick@sluggardy.net");
-        intent.putExtra(VdbPreferences.PREF_NAME, "Nick Palmer");
-		startActivity(intent);
+//        Intent intent = new Intent(this, EditPeerActivity.class);
+//        intent.putExtra(VdbPreferences.PREF_EMAIL, "nick@sluggardy.net");
+//        intent.putExtra(VdbPreferences.PREF_NAME, "Nick Palmer");
+//        intent.putExtra(VdbPreferences.PREF_DEVICE, "Desire HD");
+//		startActivity(intent);
+		finish();
 	}
 
 	@Override

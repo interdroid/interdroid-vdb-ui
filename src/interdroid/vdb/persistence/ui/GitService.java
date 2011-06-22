@@ -35,6 +35,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
@@ -44,6 +45,11 @@ public class GitService extends Service {
 
 	// The default sync interval.
 	private static final int DEFAULT_INTERVAL = 60;
+
+	private static final String ANON_DEVICE = "unknown";
+	private static final String ANON_EMAIL = "anonymous@localhost";
+	private static final String ANON_NAME = "anonymous";
+	private static final String ANON_SOCKET_NAME = VdbPreferences.makeLocalName(ANON_DEVICE, ANON_EMAIL);
 
 	// Unique Identification Number for the Notification.
 	// We use it on Notification start, and to cancel it.
@@ -94,7 +100,7 @@ public class GitService extends Service {
 		if (!isConfigured()) {
 			showPrefsNotification();
 		} else {
-			startup();
+			registerListeners();
 		}
 	}
 
@@ -107,25 +113,33 @@ public class GitService extends Service {
 				ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 				if (mRunning && !connectivityManager.getBackgroundDataSetting()) {
 					logger.info("Shutdown due to change in background data setting.");
-					shutdown();
+					shutdown(false);
 				} else if (!mRunning && connectivityManager.getBackgroundDataSetting()) {
 					logger.info("Startup due to change in background data setting.");
-					startup();
+					startup(false);
 				}
 			}
 
 		};
 		mConnectivityActionListener = new BroadcastReceiver() {
-
+			NetworkInfo mLastNetwork = null;
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				// Did we loose connectivity?
+				logger.debug("Got connectivity intent: {} ", intent);
 				if (intent.hasExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY) && intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true)) {
 					logger.info("Shutdown due to loss of connectivity");
-					shutdown();
+					shutdown(false);
 				} else {
-					logger.info("Restart due to change in network.");
-					restart();
+					NetworkInfo newNetwork = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+					logger.debug("New state is: {} ", newNetwork);
+					logger.debug("Old state is: {} ", mLastNetwork);
+					if (!newNetwork.isConnected()) {
+						shutdown(false);
+					} else {
+						startup(false);
+					}
+					mLastNetwork = newNetwork;
 				}
 			}
 		};
@@ -134,7 +148,7 @@ public class GitService extends Service {
 	}
 
 	private boolean isConfigured() {
-		return hasPref(VdbPreferences.PREF_EMAIL) && hasPref(VdbPreferences.PREF_NAME);
+		return hasPref(VdbPreferences.PREF_EMAIL) && hasPref(VdbPreferences.PREF_NAME) && hasPref(VdbPreferences.PREF_DEVICE);
 	}
 
 	private boolean hasPref(String prefName) {
@@ -214,7 +228,7 @@ public class GitService extends Service {
 					}
 				} else {
 					// Ignore anonymous socket
-					if (!"anonymous@localhost".equals(serviceName)) {
+					if (!ANON_SOCKET_NAME.equals(serviceName)) {
 						logger.info("Found possible new remote: {}", serviceName);
 						ServiceInfo info;
 						String name = null;
@@ -233,13 +247,13 @@ public class GitService extends Service {
 
 		/**
 		 * Returns true if we have this peer in our list of peers
-		 * @param serviceName The name of the peer
+		 * @param serviceName The name of the peer's service
 		 * @return true if the peer is in our list of peers.
 		 */
 		private boolean hasPeer(String serviceName) {
 			Cursor c = null;
 			try {
-				c = getContentResolver().query(PeerRegistry.URI, null, Peer.EMAIL+"=?", new String[] {serviceName}, null);
+				c = getContentResolver().query(PeerRegistry.URI, null, VdbPreferences.makeLocalName(Peer.DEVICE+"||'", "'||" +Peer.EMAIL+"=?"), new String[] {serviceName}, null);
 				if (c != null && c.moveToFirst()) {
 					return true;
 				}
@@ -292,48 +306,44 @@ public class GitService extends Service {
 
 	@Override
 	public void onDestroy() {
-		shutdown();
-	}
-
-
-	private void restart() {
-		// TODO This should have it's own notification
-		shutdown();
-		startup();
+		shutdown(true);
 	}
 
 	private boolean isStartable() {
 		return mRunnable && isConfigured() && ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getBackgroundDataSetting() && mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true);
 	}
 
-	private synchronized void startup() {
+	private synchronized void startup(boolean registerListeners) {
 		if (!mRunning && isStartable()) {
-			registerListeners();
-			try {
-				mSynchronizer = new GitSynchronizer(DEFAULT_INTERVAL);
-				startSmartsocketsDaemon();
-
-				// Display a notification about us starting.  We put an icon in the status bar.
-				showRunningNotification();
-
-				//			startGitDaemon();
-			} catch (Exception e) {
-				logger.error("Error starting daemon.", e);
-				mRunnable = false;
-			}
-
-			mRunning = true;
+			if (registerListeners) registerListeners();
+			startDaemons();
 		}
 	}
 
-	private synchronized void shutdown() {
+	private void startDaemons() {
+		try {
+			mSynchronizer = new GitSynchronizer(DEFAULT_INTERVAL);
+			startSmartsocketsDaemon();
+
+			// Display a notification about us starting.  We put an icon in the status bar.
+			showRunningNotification();
+
+			//			startGitDaemon();
+		} catch (Exception e) {
+			stopSmartsocketsDaemon();
+			logger.error("Error starting daemon.", e);
+			mRunnable = false;
+		}
+
+		mRunning = true;
+	}
+
+	private synchronized void shutdown(boolean unregisterListeners) {
 		if (mRunning) {
+			logger.debug("Handling shutdown.");
 			mRunning = false;
 
-			// Unregister our recievers
-			getApplicationContext().unregisterReceiver(this.mBackgroundDataChangedListener);
-			getApplicationContext().unregisterReceiver(this.mConnectivityActionListener);
-
+			if (unregisterListeners) unregisterListeners();
 
 			// Stop the service.
 			mSynchronizer.stop();
@@ -353,15 +363,22 @@ public class GitService extends Service {
 
 			// Tell the user we stopped.
 			Toast.makeText(this, R.string.git_service_stopped, Toast.LENGTH_SHORT).show();
+			logger.debug("Shutdown complete.");
 		}
 	}
 
+	private void unregisterListeners() {
+		// Unregister our recievers
+		getApplicationContext().unregisterReceiver(this.mBackgroundDataChangedListener);
+		getApplicationContext().unregisterReceiver(this.mConnectivityActionListener);
+	}
+
 	private String getSocketName() {
-		return mPrefs.getString(VdbPreferences.PREF_EMAIL, "anonymous@localhost");
+		return VdbPreferences.makeLocalName(mPrefs.getString(VdbPreferences.PREF_DEVICE, ANON_DEVICE), mPrefs.getString(VdbPreferences.PREF_EMAIL, ANON_EMAIL));
 	}
 
 	private String getUserName() {
-		return mPrefs.getString(VdbPreferences.PREF_NAME, "anonymous");
+		return mPrefs.getString(VdbPreferences.PREF_NAME, ANON_NAME);
 	}
 
 	@Override

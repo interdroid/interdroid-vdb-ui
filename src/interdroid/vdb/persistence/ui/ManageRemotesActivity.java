@@ -180,7 +180,7 @@ public class ManageRemotesActivity extends ListActivity implements OnItemClickLi
 		} else if (requestCode == REQUEST_ADD_PEER) {
 			if (resultCode == RESULT_OK) {
 				try {
-					EditPeerActivity.addPeerToRepository(this, data.getStringExtra(Peer.NAME), data.getStringExtra(Peer.EMAIL), vdbRepo_);
+					EditPeerActivity.addPeerToRepository(this, data.getStringExtra(Peer.NAME), data.getStringExtra(Peer.EMAIL), data.getStringExtra(Peer.DEVICE), vdbRepo_);
 					refreshList();
 				} catch (URISyntaxException e) {
 					logger.error("URI Syntax error while adding peer.", e);

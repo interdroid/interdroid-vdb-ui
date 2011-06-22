@@ -18,6 +18,7 @@ public class PeerRegistry extends ORMGenericContentProvider {
 
 	public static final String KEY_EMAIL = "email";
 	public static final String KEY_NAME = "name";
+	public static final String KEY_DEVICE = "device";
 	public static final String KEY_REPOSITORIES = "repositories";
 
 	@DbEntity(name=NAME,
@@ -40,6 +41,9 @@ public class PeerRegistry extends ORMGenericContentProvider {
 
 		@DbField(dbType=DatabaseFieldType.TEXT)
 		public static final String NAME = KEY_NAME;
+
+		@DbField(dbType=DatabaseFieldType.TEXT)
+		public static final String DEVICE = KEY_DEVICE;
 
 		@DbField(dbType=DatabaseFieldType.TEXT)
 		public static final String REPOSITORIES = KEY_REPOSITORIES;
