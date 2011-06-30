@@ -53,10 +53,12 @@ public class GitService extends Service {
 
 	// Unique Identification Number for the Notification.
 	// We use it on Notification start, and to cancel it.
-	private int NOTIFICATION = R.string.git_service_started;
+	private int NOTIFICATION_RUNNING = R.string.git_service_started;
+	private int NOTIFICATION_PREFS = R.string.git_service_set_prefs;
+	private int NOTIFICATION_NEW_PEER = R.string.git_service_found_new;
 
 	// The notification manager
-	private NotificationManager mNM;
+	private NotificationManager mNotificationManager;
 
 	// The smartsockets daemon which is listening
 	private SmartSocketsDaemon mSmartSocketsDaemon;
@@ -93,7 +95,7 @@ public class GitService extends Service {
 	@Override
 	public void onCreate() {
 		// Grab the notifications manager we will use to interact with the user
-		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mPrefs = getSharedPreferences(VdbPreferences.PREFERENCES_NAME, MODE_PRIVATE);
 
 
@@ -111,6 +113,7 @@ public class GitService extends Service {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+				logger.debug("Got background data changed message.");
 				if (mRunning && !connectivityManager.getBackgroundDataSetting()) {
 					logger.info("Shutdown due to change in background data setting.");
 					shutdown(false);
@@ -134,9 +137,11 @@ public class GitService extends Service {
 					NetworkInfo newNetwork = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
 					logger.debug("New state is: {} ", newNetwork);
 					logger.debug("Old state is: {} ", mLastNetwork);
-					if (!newNetwork.isConnected()) {
+					if (!(newNetwork.getState().equals(NetworkInfo.State.CONNECTED) || newNetwork.getState().equals(NetworkInfo.State.CONNECTING))) {
+						logger.debug("Not connected. Shutdown.");
 						shutdown(false);
 					} else {
+						logger.debug("Connected. Starting.");
 						startup(false);
 					}
 					mLastNetwork = newNetwork;
@@ -310,10 +315,14 @@ public class GitService extends Service {
 	}
 
 	private boolean isStartable() {
+		logger.debug("isStartable: {} {}", mRunnable, isConfigured());
+		logger.debug("background data: {}", ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getBackgroundDataSetting());
+		logger.debug("Sharing enabled: {}", mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true));
 		return mRunnable && isConfigured() && ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getBackgroundDataSetting() && mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true);
 	}
 
 	private synchronized void startup(boolean registerListeners) {
+		logger.debug("Starting: {} {}", mRunning, isStartable());
 		if (!mRunning && isStartable()) {
 			if (registerListeners) registerListeners();
 			startDaemons();
@@ -359,7 +368,7 @@ public class GitService extends Service {
 			}
 
 			// Cancel the persistent notification.
-			mNM.cancel(NOTIFICATION);
+			mNotificationManager.cancel(NOTIFICATION_RUNNING);
 
 			// Tell the user we stopped.
 			Toast.makeText(this, R.string.git_service_stopped, Toast.LENGTH_SHORT).show();
@@ -399,6 +408,7 @@ public class GitService extends Service {
 		// Set the icon, scrolling text and timestamp
 		Notification notification = new Notification(R.drawable.git, text,
 				System.currentTimeMillis());
+		notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
 		// The PendingIntent to launch our activity if the user selects this notification
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
@@ -409,7 +419,7 @@ public class GitService extends Service {
 				text, contentIntent);
 
 		// Send the notification.
-		mNM.notify(NOTIFICATION, notification);
+		mNotificationManager.notify(NOTIFICATION_RUNNING, notification);
 	}
 
 	private void showNewRemoteNotification(String userName, String serviceName) {
@@ -433,7 +443,7 @@ public class GitService extends Service {
 				getText(R.string.git_service_click_to_browse), contentIntent);
 
 		// Send the notification.
-		mNM.notify(NOTIFICATION, notification);
+		mNotificationManager.notify(NOTIFICATION_NEW_PEER, notification);
 	}
 
 	private void showPrefsNotification() {
@@ -452,6 +462,6 @@ public class GitService extends Service {
 				getText(R.string.git_service_set_prefs), contentIntent);
 
 		// Send the notification.
-		mNM.notify(NOTIFICATION, notification);
+		mNotificationManager.notify(NOTIFICATION_PREFS, notification);
 	}
 }
