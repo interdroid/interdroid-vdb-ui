@@ -16,6 +16,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -114,6 +116,31 @@ public class ManagePeersActivity extends Activity implements OnItemClickListener
 			startActivity(new Intent(Intent.ACTION_EDIT, Uri.withAppendedPath(PeerRegistry.URI,
 					String.valueOf(mPeers.get(position).get(Peer._ID)))));
 		}
+	}
+
+	public static final int MENU_ITEM_PREFS = Menu.FIRST;
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+
+		menu.add(0, MENU_ITEM_PREFS, 0, "Preferences")
+		.setShortcut('2', 'p')
+		.setIcon(android.R.drawable.ic_menu_preferences);
+
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_ITEM_PREFS:
+			Intent prefsIntent = new Intent(Intent.ACTION_EDIT);
+			prefsIntent.setClass(this, VdbPreferences.class);
+			startActivity(prefsIntent);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 }

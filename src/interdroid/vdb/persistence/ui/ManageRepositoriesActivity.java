@@ -14,6 +14,7 @@ import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.content.VdbProviderRegistry;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -110,14 +111,19 @@ public class ManageRepositoriesActivity extends ListActivity {
 
 	// Menu item ids
 	public static final int MENU_ITEM_ADD = Menu.FIRST;
+	public static final int MENU_ITEM_PREFS = Menu.FIRST + 1;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
 		menu.add(0, MENU_ITEM_ADD, 0, "Add")
-		.setShortcut('3', 'a')
+		.setShortcut('1', 'a')
 		.setIcon(android.R.drawable.ic_menu_add);
+
+		menu.add(0, MENU_ITEM_PREFS, 0, "Preferences")
+		.setShortcut('2', 'p')
+		.setIcon(android.R.drawable.ic_menu_preferences);
 
 		return true;
 	}
@@ -125,12 +131,18 @@ public class ManageRepositoriesActivity extends ListActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == MENU_ITEM_ADD) {
+		switch (item.getItemId()) {
+		case MENU_ITEM_ADD:
 			Intent addIntent = new Intent(Intent.ACTION_INSERT);
 			addIntent.setType(
 					"vnd.android.cursor.item/vnd.org.apache.avro.RecordDef");
 			logger.debug("Adding Repository");
 			this.startActivityForResult(addIntent, CREATE_REPOSITORY);
+			return true;
+		case MENU_ITEM_PREFS:
+			Intent prefsIntent = new Intent(Intent.ACTION_EDIT);
+			prefsIntent.setClass(this, VdbPreferences.class);
+			startActivity(prefsIntent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
