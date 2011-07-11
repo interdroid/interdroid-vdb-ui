@@ -12,7 +12,7 @@
 
 	<interdroid.vdb.persistence.ui.CommitExpandableListView
 		android:id="@+id/commits_list" android:layout_toRightOf="@+id/folder"
-		android:layout_width="match_parent"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
 
 </RelativeLayout>

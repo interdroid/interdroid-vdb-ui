@@ -2,28 +2,28 @@
 	android:layout_width="fill_parent" android:layout_height="wrap_content"
 	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
 	<!-- The Name Box -->
-	<TextView android:layout_width="match_parent" android:id="@+id/add_peer_label_name"
+	<TextView android:layout_width="fill_parent" android:id="@+id/add_peer_label_name"
 		android:layout_height="wrap_content" android:text="@string/label_name" />
 	<EditText android:layout_below="@id/add_peer_label_name"
-		android:layout_width="match_parent" android:id="@+id/add_peer_name"
+		android:layout_width="fill_parent" android:id="@+id/add_peer_name"
 		android:layout_height="wrap_content" />
 	<!-- The Email Box -->
 	<TextView android:layout_below="@id/add_peer_name" android:id="@+id/add_peer_label_email"
-		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:text="@string/label_email" />
 	<EditText android:layout_below="@id/add_peer_label_email"
-		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:id="@+id/add_peer_email" />
 	<!-- The Device Box -->
 	<TextView android:layout_below="@id/add_peer_email" android:id="@+id/add_peer_label_device"
-		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:text="@string/label_device" />
 	<EditText android:layout_below="@id/add_peer_label_device"
-		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:id="@+id/add_peer_device" />
 	<!-- Sharing Repositories -->
 	<TextView android:layout_below="@id/add_peer_device"
-		android:id="@+id/add_peer_repository_label" android:layout_width="match_parent"
+		android:id="@+id/add_peer_repository_label" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="@string/label_repositories" />
 	<!-- List header labels -->
 	<TextView android:paddingRight="2px" android:textSize="10sp"
@@ -37,5 +37,5 @@
 	<!-- Checkable list of repositories -->
 	<ListView android:layout_below="@id/add_peer_shared_label"
 		android:id="@+id/add_peer_repo_list" android:layout_height="wrap_content"
-		android:layout_width="match_parent" android:clickable="true" />
+		android:layout_width="fill_parent" android:clickable="true" />
 </RelativeLayout>
