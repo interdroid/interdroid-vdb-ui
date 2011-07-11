@@ -120,32 +120,19 @@ public class AddBranchActivity extends Activity implements OnClickListener {
 	{
 		if (v == btnCreate_) {
 //			VdbRepositoryImpl impl = (VdbRepositoryImpl) vdbRepo_;
-			if (chosenBase_ == null) {
-				Toast.makeText(this, "Please pick a base revision.",
-						Toast.LENGTH_SHORT).show();
-				return;
-			}
-			String name = editName_.getText().toString();
-			if (!Repository.isValidRefName(Constants.R_REFS + name)
-					|| name.contains("/")) {
-				Toast.makeText(this, "Invalid branch name.", Toast.LENGTH_SHORT)
-						.show();
-				return;
-			}
-			try {
-				if (vdbRepo_.listBranches().contains(name)) {
-					Toast.makeText(this, "Branch " + name + " already exists.",
-							Toast.LENGTH_SHORT).show();
-					return;
-				}
-				vdbRepo_.createBranch(name, chosenBase_.reference);
 
-				Intent result = new Intent(Intent.ACTION_DEFAULT,
-						EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(), name));
-				setResult(RESULT_OK, result);
-				finish();
-			} catch(IOException e) {
-				throw new RuntimeException(e);
+			String name = editName_.getText().toString();
+			if (verifyCreateInputs(name)) {
+				try {
+					vdbRepo_.createBranch(name, chosenBase_.reference);
+
+					Intent result = new Intent(Intent.ACTION_DEFAULT,
+							EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(), name));
+					setResult(RESULT_OK, result);
+					finish();
+				} catch(IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		} else if (v == btnPick_) {
 			/* launch the RevisionPicker activity */
@@ -154,5 +141,40 @@ public class AddBranchActivity extends Activity implements OnClickListener {
 		} else if (v == btnCancel_) {
 			finish();
 		}
+	}
+
+	private boolean verifyCreateInputs(String name) {
+		if ( verifyBaseRevision() && verifyBranchName(name) ) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean verifyBaseRevision() {
+		if (chosenBase_ == null) {
+			Toast.makeText(this, "Please pick a base revision.",
+					Toast.LENGTH_SHORT).show();
+			return false;
+		}
+		return true;
+	}
+
+	private boolean verifyBranchName(String name) {
+		if (!Repository.isValidRefName(Constants.R_REFS + name)
+				|| name.contains("/")) {
+			Toast.makeText(this, "Invalid branch name.", Toast.LENGTH_SHORT)
+			.show();
+			return false;
+		}
+		try {
+			if (vdbRepo_.listBranches().contains(name)) {
+				Toast.makeText(this, "Branch " + name + " already exists.",
+						Toast.LENGTH_SHORT).show();
+				return false;
+			}
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
 	}
 }
