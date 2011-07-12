@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/vdb/external/jsch-0.1.42.jar"/>
 	<classpathentry kind="lib" path="/vdb/external/slf4j-api-1.5.5.jar"/>
 	<classpathentry kind="lib" path="/vdb/external/avro-1.6.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/vdb/external/jackson-core-asl-1.7.3.jar"/>
@@ -17,9 +16,10 @@
 	<classpathentry kind="src" path="slf4android_src"/>
 	<classpathentry kind="src" path="vdb_src"/>
 	<classpathentry kind="src" path="vdb-avro_src"/>
-	<classpathentry kind="src" path="smartsockets_src"/>
+	<classpathentry excluding="ibis/smartsockets/viz/" kind="src" path="smartsockets_src"/>
 	<classpathentry kind="src" path="org.eclipse.jgit_src"/>
 	<classpathentry kind="src" path="org.eclipse.jgit_resources"/>
 	<classpathentry kind="lib" path="/vdb/external/ibis-util-2.2.jar"/>
+	<classpathentry kind="lib" path="/vdb/external/jsch-0.1.44-1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
