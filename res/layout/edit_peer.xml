@@ -15,9 +15,9 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:id="@+id/add_peer_email" />
 	<!-- The Device Box -->
-	<TextView android:layout_below="@id/add_peer_email" android:id="@+id/add_peer_label_device"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:text="@string/label_device" />
+	<TextView android:layout_below="@id/add_peer_email"
+		android:id="@+id/add_peer_label_device" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/label_device" />
 	<EditText android:layout_below="@id/add_peer_label_device"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:id="@+id/add_peer_device" />
@@ -26,11 +26,16 @@
 		android:id="@+id/add_peer_repository_label" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="@string/label_repositories" />
 	<!-- List header labels -->
-	<TextView android:paddingRight="2px" android:textSize="10sp"
-		android:layout_width="wrap_content" android:layout_below="@+id/add_peer_repository_label"
-		android:text="@string/label_shared" android:layout_height="wrap_content"
-		android:id="@+id/add_peer_shared_label" />
-	<TextView android:textSize="10sp" android:paddingLeft="50sp"
+	<TextView android:paddingLeft="7px"
+		android:textSize="10sp" android:layout_width="wrap_content"
+		android:layout_below="@+id/add_peer_repository_label" android:text="@string/label_public"
+		android:layout_height="wrap_content" android:id="@+id/add_peer_public_label" />
+	<TextView android:paddingLeft="14px"
+		android:textSize="10sp" android:layout_width="wrap_content"
+		android:layout_below="@+id/add_peer_repository_label"
+		android:layout_toRightOf="@+id/add_peer_public_label" android:text="@string/label_shared"
+		android:layout_height="wrap_content" android:id="@+id/add_peer_shared_label" />
+	<TextView android:textSize="10sp" android:paddingLeft="10px"
 		android:layout_width="wrap_content" android:text="@string/label_repository_name"
 		android:layout_height="wrap_content" android:layout_below="@+id/add_peer_repository_label"
 		android:layout_toRightOf="@id/add_peer_shared_label" />

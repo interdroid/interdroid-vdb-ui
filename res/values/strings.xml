@@ -39,6 +39,7 @@
 	<string name="label_public_repository">Public Repository</string>
 	<string name="label_branches">Branches</string>
 	<string name="label_sharing">Sharing</string>
+	<string name="label_public">Public</string>
 	<string name="label_peers">Peers</string>
 	<string name="label_peer">Peer</string>
 	<string name="label_hub">Hub</string>

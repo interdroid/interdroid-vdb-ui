@@ -24,10 +24,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
-import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -136,6 +133,11 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 		buildUI(name, email, device);
 	}
 
+	public void onResume() {
+		super.onResume();
+		refreshList();
+	}
+
 	protected void onPause() {
 		super.onPause();
 
@@ -173,27 +175,16 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 
 		// Has to come before first refresh to setup header before adapter is set.
 		setupListHeader(name, email, device);
-		refreshList(email);
-
-		getListView().setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
-
-			@Override
-			public void onCreateContextMenu(ContextMenu menu, View v,
-					ContextMenuInfo menuInfo) {
-				logger.error("Got onCreateContextMenu", v);
-			}
-
-		});
 		getListView().setClickable(true);
 		getListView().setOnItemClickListener(this);
 	}
 
-	private void refreshList(String email) {
-		mRepos = getAllRepos(email);
-
+	private void refreshList() {
+		String remoteName = VdbPreferences.makeLocalName(mDevice.getText().toString(), mEmail.getText().toString());
+		mRepos = getAllRepos(remoteName);
 		mAdapter = new SimpleAdapter(this, mRepos, R.layout.repo_peer_item,
-				new String[] {VdbProviderRegistry.REPOSITORY_IS_PEER, VdbProviderRegistry.REPOSITORY_NAME},
-				new int[] {R.id.repoIsPeer, R.id.repoName}) {
+				new String[] {VdbProviderRegistry.REPOSITORY_IS_PUBLIC, VdbProviderRegistry.REPOSITORY_IS_PEER, VdbProviderRegistry.REPOSITORY_NAME},
+				new int[] {R.id.repoIsPublic, R.id.repoIsPeer, R.id.repoName}) {
 
 			public boolean areAllItemsEnabled() {
 				logger.debug("All items enabled!");
@@ -244,14 +235,16 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		logger.info("Got onItemClick click on: {} {}", id, position);
+		logger.info("Got onItemClick click on: {} {}", view.getId(), position);
 		Map<String, Object> data = mRepos.get(position);
 		boolean isPeer = (Boolean) data.get(VdbProviderRegistry.REPOSITORY_IS_PEER);
+		logger.debug("repoIsPeer: " + R.id.repoIsPeer + " Public: " + R.id.repoIsPublic + " view: " + view.getId());
 		try {
 			VdbRepository repo = VdbRepositoryRegistry.getInstance()
-			.getRepository(this, (String) data.get(VdbProviderRegistry.REPOSITORY_NAME));
+					.getRepository(this, (String) data.get(VdbProviderRegistry.REPOSITORY_NAME));
 			if (isPeer) {
-				repo.deleteRemote(mEmail.getText().toString());
+				String remoteName = VdbPreferences.makeLocalName(mDevice.getText().toString(), mEmail.getText().toString());
+				repo.deleteRemote(remoteName);
 			} else {
 				addPeerToRepository(this, mName.getText().toString(), mEmail.getText().toString(), mDevice.getText().toString(), repo);
 			}
@@ -291,9 +284,10 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 		} else {
 
 			info.setDescription(userName);
-			info.setName(device + "-" + userEmail);
+			String remoteName = VdbPreferences.makeLocalName(device, userEmail);
+			info.setName(remoteName);
 			info.setOurNameOnRemote(localName);
-			URIish uri = new URIish().setScheme("ss").setHost(VdbPreferences.makeLocalName(device, userEmail)).setPath("/" + repo.getName());
+			URIish uri = new URIish().setScheme("ss").setHost(remoteName).setPath("/" + repo.getName());
 			logger.debug("URI is: {}", uri);
 			info.setRemoteUri(uri);
 			try {
