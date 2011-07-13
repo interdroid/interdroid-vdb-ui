@@ -43,10 +43,17 @@ public class ManageRepositoryActivity extends TabActivity {
 	            		intent.getData())));
 
 	    tabHost.addTab(tabHost.newTabSpec("peers")
-	            .setIndicator(getString(R.string.label_sharing))
+	            .setIndicator(getString(R.string.label_peers))
 	            .setContent(new Intent(
 	            		Actions.ACTION_MANAGE_REMOTES,
 	            		intent.getData())));
+
+	    tabHost.addTab(tabHost.newTabSpec("properties")
+	            .setIndicator(getString(R.string.label_sharing))
+	            .setContent(new Intent(
+	            		Actions.ACTION_MANAGE_REPOSITORY_PROPERTIES,
+	            		intent.getData())));
+
 	}
 
 }

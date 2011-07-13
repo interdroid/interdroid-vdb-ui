@@ -28,6 +28,7 @@
 	<string name="error_cant_delete_nonlocal_branch">Error: You can only delete local branches</string>
 	<string name="error_delete_branch">Error: Unable to delete the branch</string>
 	<string name="error_invalid_version">Error: Invalid version selected</string>
+	<string name="error_toggling_is_public">Error: Unable to toggle repository state</string>
 
 	<string name="label_name">Name:</string>
 	<string name="label_email">Email:</string>
@@ -35,8 +36,10 @@
 	<string name="label_repositories">Repositories:</string>
 	<string name="label_shared">Shared</string>
 	<string name="label_repository_name">Repository Name</string>
+	<string name="label_public_repository">Public Repository</string>
 	<string name="label_branches">Branches</string>
 	<string name="label_sharing">Sharing</string>
+	<string name="label_peers">Peers</string>
 	<string name="label_peer">Peer</string>
 	<string name="label_hub">Hub</string>
 	<string name="label_local_branches">Local Branches</string>

@@ -44,13 +44,16 @@ public class ManageRepositoriesActivity extends ListActivity {
 		buildUI();
 	}
 
-	private void buildUI() {
-		setTitle(getString(R.string.title_manage_repositories));
-
+	protected void onResume() {
+		super.onResume();
 		repos = getAllRepos();
 		mAdapter = new SimpleAdapter(this, repos, R.layout.repo_item,
 				new String[] {VdbProviderRegistry.REPOSITORY_NAME}, new int[] {R.id.repoName});
 		setListAdapter(mAdapter);
+	}
+
+	private void buildUI() {
+		setTitle(getString(R.string.title_manage_repositories));
 	}
 
 	private List<Map<String, Object>> getAllRepos() {

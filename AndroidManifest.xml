@@ -85,6 +85,14 @@
 			</intent-filter>
 		</activity>
 
+		<activity android:name=".persistence.ui.ManageRepositoryPropertiesActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.MANAGE_REPOSITORY_PROPERTIES" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/repository" />
+			</intent-filter>
+		</activity>
+
 		<activity android:name=".persistence.ui.ManageRemotesActivity">
 			<intent-filter>
 				<action android:name="interdroid.vdb.action.MANAGE_REMOTES" />

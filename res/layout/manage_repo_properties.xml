@@ -1,0 +1,7 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/linearLayout1" android:layout_height="fill_parent"
+	android:weightSum="1" android:layout_width="fill_parent">
+	<CheckBox android:text="@string/label_public_repository" android:layout_height="wrap_content"
+		android:id="@+id/is_public" android:layout_width="fill_parent"></CheckBox>
+</LinearLayout>
