@@ -42,11 +42,12 @@ public class TestActivity extends Activity {
 //		Intent intent = new Intent(Actions.ACTION_MANAGE_REPOSITORY,
 //				EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, "google.notes"));
 
-//        Intent intent = new Intent(this, EditPeerActivity.class);
-//        intent.putExtra(VdbPreferences.PREF_EMAIL, "nick@sluggardy.net");
-//        intent.putExtra(VdbPreferences.PREF_NAME, "Nick Palmer");
-//        intent.putExtra(VdbPreferences.PREF_DEVICE, "Desire HD");
-//		startActivity(intent);
+
+        Intent intent = new Intent(this, EditPeerDetailsActivity.class);
+        intent.putExtra(VdbPreferences.PREF_EMAIL, "nick@sluggardy.net");
+        intent.putExtra(VdbPreferences.PREF_NAME, "Nick Palmer");
+        intent.putExtra(VdbPreferences.PREF_DEVICE, "Desire HD");
+		startActivity(intent);
 		finish();
 	}
 

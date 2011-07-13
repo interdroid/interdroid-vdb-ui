@@ -105,7 +105,8 @@
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<data android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />
+				<data
+					android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />
 			</intent-filter>
 			<intent-filter>
 				<action android:name="interdroid.vdb.action.MANAGE_PEERS" />
@@ -123,6 +124,33 @@
 		<activity android:name=".persistence.ui.EditPeerActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.EDIT" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data
+					android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".persistence.ui.EditPeerDetailsActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.MANAGE_PEER_INFO" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data
+					android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".persistence.ui.EditLocalSharedRepositoriesActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.MANAGE_LOCAL_SHARING" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data
+					android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".persistence.ui.EditRemoteSharedRepositoriesActivity">
+			<intent-filter>
+				<action android:name="interdroid.vdb.action.MANAGE_REMOTE_SHARING" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<data
 					android:mimeType="vnd.android.cursor.item/interdroid.vdb.persistence.content.peer" />

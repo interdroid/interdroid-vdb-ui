@@ -12,6 +12,7 @@ import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
 import interdroid.vdb.persistence.content.PeerRegistry;
 import interdroid.vdb.persistence.content.PeerRegistry.Peer;
+import interdroid.vdb.persistence.ui.EditPeerActivity.PeerInfo;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -180,7 +181,8 @@ public class ManageRemotesActivity extends ListActivity implements OnItemClickLi
 		} else if (requestCode == REQUEST_ADD_PEER) {
 			if (resultCode == RESULT_OK) {
 				try {
-					EditPeerActivity.addPeerToRepository(this, data.getStringExtra(Peer.NAME), data.getStringExtra(Peer.EMAIL), data.getStringExtra(Peer.DEVICE), vdbRepo_);
+					PeerInfo peerInfo = new PeerInfo(data.getStringExtra(Peer.NAME), data.getStringExtra(Peer.EMAIL), data.getStringExtra(Peer.DEVICE));
+					EditPeerActivity.addPeerToRepository(this, peerInfo, vdbRepo_);
 					refreshList();
 				} catch (URISyntaxException e) {
 					logger.error("URI Syntax error while adding peer.", e);

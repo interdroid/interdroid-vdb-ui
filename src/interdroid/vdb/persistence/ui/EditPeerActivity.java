@@ -1,151 +1,87 @@
 package interdroid.vdb.persistence.ui;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
+
+import interdroid.vdb.Actions;
+import interdroid.vdb.R;
+import interdroid.vdb.persistence.api.RemoteInfo;
+import interdroid.vdb.persistence.api.VdbRepository;
+import interdroid.vdb.persistence.content.PeerRegistry;
+import interdroid.vdb.persistence.content.PeerRegistry.Peer;
+
 
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.URIish;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import interdroid.vdb.R;
-import interdroid.vdb.content.VdbProviderRegistry;
-import interdroid.vdb.persistence.api.RemoteInfo;
-import interdroid.vdb.persistence.api.VdbRepository;
-import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
-import interdroid.vdb.persistence.content.PeerRegistry;
-import interdroid.vdb.persistence.content.PeerRegistry.Peer;
 import android.app.Activity;
+import android.app.TabActivity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.TabHost;
 import android.widget.Toast;
 
-public class EditPeerActivity extends Activity implements OnItemClickListener {
+public class EditPeerActivity extends TabActivity {
 	private static final Logger logger = LoggerFactory
-	.getLogger(EditPeerActivity.class);
+			.getLogger(EditPeerActivity.class);
 
 	static final int ACTIVITY_SET_PREFERENCES = 0x10101;
 
-	private EditText mEmail;
-	private EditText mName;
-	private EditText mDevice;
-	private SimpleAdapter mAdapter;
+	public static class PeerInfo {
+		public PeerInfo() { }
 
-	private Uri mUri;
+		public PeerInfo(String name, String email,
+				String device) {
+			this.name = name;
+			this.email = email;
+			this.device = device;
+		}
 
-	private List<Map<String, Object>> mRepos;
-
-	private VdbProviderRegistry mProviderRegistry;
-
-	private boolean mAddMode = false;
+		public String name;
+		public String email;
+		public String device;
+		public Uri uri;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		// TODO: Make this a full edit activity
+
 		Intent intent = getIntent();
-		mUri = intent.getData();
-		logger.debug("Got request to edit peer: {}", mUri);
+		Uri uri = intent.getData();
+		logger.debug("Got request to edit peer: {}", uri);
 
-		String email;
-		String name;
-		String device;
+        setTitle(getText(R.string.title_manage_peer));
 
-		if (mUri == null) {
-			mAddMode = true;
+        // Make sure local prefs are set
+        getLocalName(this);
 
-			Bundle extras = intent.getExtras();
-			email = extras.getString(VdbPreferences.PREF_EMAIL);
-			name = extras.getString(VdbPreferences.PREF_NAME);
-			device = extras.getString(VdbPreferences.PREF_DEVICE);
+		final TabHost tabHost = getTabHost();
 
-			if (name == null) {
-				Toast.makeText(this, R.string.error_no_name, Toast.LENGTH_LONG).show();
-				finish();
-				return;
-			}
-			if (email == null) {
-				Toast.makeText(this, R.string.error_no_email, Toast.LENGTH_LONG).show();
-				finish();
-				return;
-			}
-			// Does this peer already exist?
-			Cursor c = getContentResolver().query(PeerRegistry.URI, null,
-					Peer.EMAIL + "=? AND " + Peer.DEVICE + "=?", new String[] {email, device}, null);
-			if (c != null && c.moveToFirst()) {
-				logger.warn("Request to add existing peer.");
-					mUri = Uri.withAppendedPath(PeerRegistry.URI,
-							String.valueOf(c.getInt(c.getColumnIndex(Peer._ID))));
-			} else {
-				logger.debug("Adding to peers: {} {}", name, email);
-				ContentValues values = new ContentValues();
-				values.put(Peer.NAME, name);
-				values.put(Peer.EMAIL, email);
-				values.put(Peer.DEVICE, device);
-				mUri = getContentResolver().insert(PeerRegistry.URI, values);
-			}
-			if (c != null) {
-				c.close();
-			}
-		} else {
-			logger.debug("Querying for peer.");
-			Cursor c = getContentResolver().query(mUri, null, null, null, null);
-			if (c != null && c.getCount() == 1 && c.moveToFirst()) {
-				name = c.getString(c.getColumnIndex(Peer.NAME));
-				email = c.getString(c.getColumnIndex(Peer.EMAIL));
-				device = c.getString(c.getColumnIndex(Peer.DEVICE));
-				c.close();
-			} else {
-				Toast.makeText(this, R.string.error_managing_peer, Toast.LENGTH_LONG).show();
-				if (c != null) {
-					c.close();
-				}
-				finish();
-				return;
-			}
-		}
+	    tabHost.addTab(tabHost.newTabSpec("details")
+	            .setIndicator(getString(R.string.label_peer_info))
+	            .setContent(new Intent(
+	            		Actions.ACTION_MANAGE_PEER_INFO,
+	            		uri)));
 
-		// TODO: Register preference change listener
-		// Make sure name preference exists
-		getLocalName(this);
+	    tabHost.addTab(tabHost.newTabSpec("local")
+	            .setIndicator(getString(R.string.label_local_repositories))
+	            .setContent(new Intent(
+	            		Actions.ACTION_MANAGE_LOCAL_SHARING,
+	            		uri)));
 
-		try {
-			mProviderRegistry = new VdbProviderRegistry(this);
-		} catch (IOException e) {
-			logger.error("Unable to get provider registry: ", e);
-			Toast.makeText(this, R.string.error_fetching_repos, Toast.LENGTH_LONG).show();
-			finish();
-		}
+	    tabHost.addTab(tabHost.newTabSpec("remote")
+	            .setIndicator(getString(R.string.label_remote_repositories))
+	            .setContent(new Intent(
+	            		Actions.ACTION_MANAGE_REMOTE_SHARING,
+	            		uri)));
 
-		buildUI(name, email, device);
-	}
-
-	public void onResume() {
-		super.onResume();
-		refreshList();
-	}
-
-	protected void onPause() {
-		super.onPause();
-
-		// Save name back to peer.
-		ContentValues values = new ContentValues();
-		values.put(Peer.NAME, mName.getText().toString());
-		values.put(Peer.DEVICE, mDevice.getText().toString());
-		getContentResolver().update(mUri, values, null, null);
 	}
 
 	static String getLocalName(Activity context) {
@@ -160,104 +96,67 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 		return localName;
 	}
 
-	private ListView getListView() {
-		return (ListView) findViewById(R.id.add_peer_repo_list);
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Make sure the local name was set properly.
+		getLocalName(this);
 	}
 
-	private void buildUI(String name, String email, String device)
-	{
-		if (mAddMode) {
-			setTitle(R.string.title_add_peer);
-		} else {
-			setTitle(R.string.title_edit_peer);
-		}
-		setContentView(R.layout.edit_peer);
+	public static PeerInfo getPeerInfo(Activity context, Uri uri, Bundle extras) {
+		PeerInfo peerInfo = new PeerInfo();
 
-		// Has to come before first refresh to setup header before adapter is set.
-		setupListHeader(name, email, device);
-		getListView().setClickable(true);
-		getListView().setOnItemClickListener(this);
-	}
+		if (uri == null) {
+			peerInfo.email = extras.getString(VdbPreferences.PREF_EMAIL);
+			peerInfo.name = extras.getString(VdbPreferences.PREF_NAME);
+			peerInfo.device = extras.getString(VdbPreferences.PREF_DEVICE);
 
-	private void refreshList() {
-		String remoteName = VdbPreferences.makeLocalName(mDevice.getText().toString(), mEmail.getText().toString());
-		mRepos = getAllRepos(remoteName);
-		mAdapter = new SimpleAdapter(this, mRepos, R.layout.repo_peer_item,
-				new String[] {VdbProviderRegistry.REPOSITORY_IS_PUBLIC, VdbProviderRegistry.REPOSITORY_IS_PEER, VdbProviderRegistry.REPOSITORY_NAME},
-				new int[] {R.id.repoIsPublic, R.id.repoIsPeer, R.id.repoName}) {
-
-			public boolean areAllItemsEnabled() {
-				logger.debug("All items enabled!");
-				return true;
+			if (peerInfo.name == null) {
+				Toast.makeText(context, R.string.error_no_name, Toast.LENGTH_LONG).show();
+				return null;
 			}
-
-			public boolean isEnabled(int position) {
-				logger.debug("Item enabled: {}", position);
-				return true;
+			if (peerInfo.email == null) {
+				Toast.makeText(context, R.string.error_no_email, Toast.LENGTH_LONG).show();
+				return null;
 			}
-		};
-		setListAdapter(mAdapter);
-	}
-
-	private void setListAdapter(SimpleAdapter adapter) {
-		getListView().setAdapter(adapter);
-	}
-
-	private void setupListHeader(String name, String email, String device) {
-		mDevice = (EditText)findViewById(R.id.add_peer_device);
-		mDevice.setText(device);
-		mDevice.setEnabled(false);
-		mDevice.setFocusable(false);
-
-		mEmail = (EditText)findViewById(R.id.add_peer_email);
-		mEmail.setText(email);
-		mEmail.setEnabled(false);
-		mEmail.setFocusable(false);
-
-		mName = (EditText)findViewById(R.id.add_peer_name);
-		mName.setText(name);
-		mName.setEnabled(true);
-		mName.setFocusable(true);
-	}
-
-	private List<Map<String, Object>> getAllRepos(String email) {
-		List<Map<String, Object>> result = null;
-		try {
-			result = mProviderRegistry.getAllRepositories(email);
-		} catch (IOException e) {
-			logger.error("Error fetching list of repositories: ", e);
-			Toast.makeText(this, R.string.error_fetching_repos, Toast.LENGTH_LONG).show();
-			finish();
-		}
-		return result;
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		logger.info("Got onItemClick click on: {} {}", view.getId(), position);
-		Map<String, Object> data = mRepos.get(position);
-		boolean isPeer = (Boolean) data.get(VdbProviderRegistry.REPOSITORY_IS_PEER);
-		logger.debug("repoIsPeer: " + R.id.repoIsPeer + " Public: " + R.id.repoIsPublic + " view: " + view.getId());
-		try {
-			VdbRepository repo = VdbRepositoryRegistry.getInstance()
-					.getRepository(this, (String) data.get(VdbProviderRegistry.REPOSITORY_NAME));
-			if (isPeer) {
-				String remoteName = VdbPreferences.makeLocalName(mDevice.getText().toString(), mEmail.getText().toString());
-				repo.deleteRemote(remoteName);
+			// Does this peer already exist?
+			Cursor c = context.getContentResolver().query(PeerRegistry.URI, null,
+					Peer.EMAIL + "=? AND " + Peer.DEVICE + "=?", new String[] {peerInfo.email, peerInfo.device}, null);
+			if (c != null && c.moveToFirst()) {
+				logger.warn("Request to add existing peer.");
+					peerInfo.uri = Uri.withAppendedPath(PeerRegistry.URI,
+							String.valueOf(c.getInt(c.getColumnIndex(Peer._ID))));
 			} else {
-				addPeerToRepository(this, mName.getText().toString(), mEmail.getText().toString(), mDevice.getText().toString(), repo);
+				logger.debug("Adding to peers: {} {}", peerInfo.name, peerInfo.email);
+				ContentValues values = new ContentValues();
+				values.put(Peer.NAME, peerInfo.name);
+				values.put(Peer.EMAIL, peerInfo.email);
+				values.put(Peer.DEVICE, peerInfo.device);
+				peerInfo.uri = context.getContentResolver().insert(PeerRegistry.URI, values);
 			}
-			data.put(VdbProviderRegistry.REPOSITORY_IS_PEER, !isPeer);
-			mAdapter.notifyDataSetChanged();
-		} catch (IOException e) {
-			logger.error("Unable to add peer.", e);
-			Toast.makeText(this, R.string.error_toggling_peer, Toast.LENGTH_LONG).show();
-		} catch (URISyntaxException e) {
-			logger.error("Unable to add peer.", e);
-			Toast.makeText(this, R.string.error_toggling_peer, Toast.LENGTH_LONG).show();
+			if (c != null) {
+				c.close();
+			}
+		} else {
+			logger.debug("Querying for peer.");
+			peerInfo.uri = uri;
+			Cursor c = context.getContentResolver().query(uri, null, null, null, null);
+			if (c != null && c.getCount() == 1 && c.moveToFirst()) {
+				peerInfo.name = c.getString(c.getColumnIndex(Peer.NAME));
+				peerInfo.email = c.getString(c.getColumnIndex(Peer.EMAIL));
+				peerInfo.device = c.getString(c.getColumnIndex(Peer.DEVICE));
+				c.close();
+			} else {
+				Toast.makeText(context, R.string.error_managing_peer, Toast.LENGTH_LONG).show();
+				if (c != null) {
+					c.close();
+				}
+				return null;
+			}
 		}
+
+		return peerInfo;
 	}
+
+	// TODO: This belongs somewhere else I think. But where?
 
 	/**
 	 * May launch SET_PREFERENCES preference activity for result. Callers must be able to handle this result.
@@ -271,20 +170,20 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 	 * @return true If we successfully added.
 	 * @throws URISyntaxException
 	 */
-	public static boolean addPeerToRepository(Activity context, String userName, String userEmail, String device, VdbRepository repo)
+	public static boolean addPeerToRepository(Activity context, PeerInfo peerInfo, VdbRepository repo)
 			throws URISyntaxException {
 		boolean result = false;
-		String localName = getLocalName(context);
+		String localName = EditPeerActivity.getLocalName(context);
 
 		RemoteInfo info = new RemoteInfo();
 		info.setType(RemoteInfo.RemoteType.HUB);
+		String remoteName = VdbPreferences.makeLocalName(peerInfo.device, peerInfo.email);
 
-		if (userEmail == null || !Repository.isValidRefName("refs/remote/" + userEmail)) {
+		if (peerInfo.email == null || !Repository.isValidRefName("refs/remote/" + peerInfo.email)) {
 			Toast.makeText(context, R.string.error_invalid_remote, Toast.LENGTH_LONG).show();
 		} else {
 
-			info.setDescription(userName);
-			String remoteName = VdbPreferences.makeLocalName(device, userEmail);
+			info.setDescription(peerInfo.name);
 			info.setName(remoteName);
 			info.setOurNameOnRemote(localName);
 			URIish uri = new URIish().setScheme("ss").setHost(remoteName).setPath("/" + repo.getName());
@@ -300,9 +199,5 @@ public class EditPeerActivity extends Activity implements OnItemClickListener {
 			}
 		}
 		return result;
-	}
-
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		getLocalName(this);
 	}
 }

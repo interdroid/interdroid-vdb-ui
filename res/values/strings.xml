@@ -50,6 +50,11 @@
 	<string name="label_commits">Commits</string>
 	<string name="label_creation_time">Created:</string>
 	<string name="label_by">By:</string>
+	<string name="label_browse_remote">Browse Remote Repositories</string>
+	<string name="label_synchronize">Synchronize</string>
+	<string name="label_local_repositories">Local DBs</string>
+	<string name="label_remote_repositories">Remote DBs</string>
+	<string name="label_peer_info">Peer Info</string>
 
 	<string name="title_persistencebrowser">Persistence browser</string>
 	<string name="title_preferences">VDB Preferences</string>
@@ -64,6 +69,7 @@
 	<string name="title_pick_peer">Pick a Peer</string>
 	<string name="title_peer_actions">Actions For This Peer</string>
 	<string name="title_branch_action">Actions For This Branch</string>
+	<string name="title_manage_peer">Manage Peer</string>
 
 	<string name="action_open_repo">Open Repository</string>
 	<string name="action_manage_repo">Manage Repository</string>
