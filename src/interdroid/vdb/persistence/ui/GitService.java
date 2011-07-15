@@ -77,6 +77,7 @@ public class GitService extends Service {
 	private boolean mRunnable = true;
 
 	private SharedPreferences mPrefs;
+	private SharedPreferences.OnSharedPreferenceChangeListener mSharedPrefsChangeListener;
 
 	// TODO: Register preference listener just in case they change.
 	//       Notify in the preferences via a broadcast change.
@@ -97,7 +98,6 @@ public class GitService extends Service {
 		// Grab the notifications manager we will use to interact with the user
 		mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		mPrefs = getSharedPreferences(VdbPreferences.PREFERENCES_NAME, MODE_PRIVATE);
-
 
 		if (!isConfigured()) {
 			showPrefsNotification();
@@ -148,6 +148,26 @@ public class GitService extends Service {
 				}
 			}
 		};
+		mSharedPrefsChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+			@Override
+			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+				mPrefs = sharedPreferences;
+				logger.debug("Shared Preference Changed: {}", key);
+				if (VdbPreferences.PREF_SHARING_ENABLED.equals(key)) {
+					if (mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true)) {
+						logger.debug("Sharing enabled. Starting.");
+						startup(false);
+					} else {
+						logger.debug("Sharing disabled. Stopping.");
+						shutdown(false);
+					}
+				}
+			}
+
+		};
+		mPrefs.registerOnSharedPreferenceChangeListener(mSharedPrefsChangeListener);
+
 		getApplicationContext().registerReceiver(mBackgroundDataChangedListener, new IntentFilter(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED));
 		getApplicationContext().registerReceiver(mConnectivityActionListener, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 	}
@@ -317,7 +337,7 @@ public class GitService extends Service {
 	private boolean isStartable() {
 		logger.debug("isStartable: {} {}", mRunnable, isConfigured());
 		logger.debug("background data: {}", ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getBackgroundDataSetting());
-		logger.debug("Sharing enabled: {}", mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true));
+		logger.debug("Sharing enabled: {}", mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, false));
 		return mRunnable && isConfigured() && ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getBackgroundDataSetting() && mPrefs.getBoolean(VdbPreferences.PREF_SHARING_ENABLED, true);
 	}
 

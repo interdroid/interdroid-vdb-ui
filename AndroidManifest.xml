@@ -19,8 +19,7 @@
 			android:writePermission="interdroid.vdb.permission.WRITE_DATABASE">
 		</provider>
 
-		<service android:name=".persistence.ui.GitService"
-			android:process=":git_daemon">
+		<service android:name=".persistence.ui.GitService">
 			<intent-filter>
 				<action android:name="interdroid.vdb.GIT_SERVICE" />
 			</intent-filter>
