@@ -29,6 +29,7 @@
 	<string name="error_delete_branch">Error: Unable to delete the branch</string>
 	<string name="error_invalid_version">Error: Invalid version selected</string>
 	<string name="error_toggling_is_public">Error: Unable to toggle repository state</string>
+	<string name="error_contacting_peer">Error: Unable to contact the peer</string>
 
 	<string name="label_name">Name:</string>
 	<string name="label_email">Email:</string>
