@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import interdroid.util.view.AsyncTaskWithProgressDialog;
 import interdroid.vdb.Actions;
 import interdroid.vdb.R;
 import interdroid.vdb.content.EntityUriBuilder;
@@ -40,6 +41,16 @@ public class ManageRepositoriesActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		new AsyncTaskWithProgressDialog<Void, Void, Void>(this, getString(R.string.label_loading), getString(R.string.label_wait)) {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				startService(new Intent(Actions.GIT_SERVICE));
+				return null;
+			}
+
+		}.execute();
 
 		buildUI();
 	}
