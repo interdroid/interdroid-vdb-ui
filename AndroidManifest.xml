@@ -12,12 +12,63 @@
 		android:label="@string/perm_write_database" android:description="@string/perm_write_database_desc"
 		android:protectionLevel="dangerous" />
 
+	<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"></uses-permission>
+
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 
 		<provider android:name="interdroid.vdb.content.VdbMainContentProvider"
 			android:authorities="interdroid.vdb.content" android:readPermission="interdroid.vdb.permission.READ_DATABASE"
 			android:writePermission="interdroid.vdb.permission.WRITE_DATABASE">
 		</provider>
+
+		<provider android:name="interdroid.vdb.sm.provider.AvroSchemaProvider"
+			android:authorities="interdroid.vdb.content.avro.schemas" />
+
+		<activity android:name="interdroid.vdb.avro.view.AvroDBMaker">
+			<intent-filter>
+				<action android:name="interdroid.vdb.INIT_DB" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data
+					android:mimeType="vnd.android.cursor.item/vnd.interdroid.vdb.content.avro.schemas.Record" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="interdroid.vdb.avro.view.AvroBaseEditor">
+			<intent-filter>
+				<action android:name="android.intent.action.EDIT" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.INSERT" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/branch.local" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.EDIT" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/branch.local" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="interdroid.vdb.avro.view.AvroBaseList">
+			<!-- TODO: The intents launched for these should have additional information
+				on the type -->
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/branch.local" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/branch.remote" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.interdroid.vdb.content/commit" />
+			</intent-filter>
+		</activity>
 
 		<service android:name=".persistence.ui.GitService">
 			<intent-filter>

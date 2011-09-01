@@ -19,7 +19,8 @@ public class PeerRegistry extends ORMGenericContentProvider {
 	public static final String KEY_EMAIL = "email";
 	public static final String KEY_NAME = "name";
 	public static final String KEY_DEVICE = "device";
-	public static final String KEY_REPOSITORIES = "repositories";
+	public static final String KEY_STATE = "state";
+
 
 	@DbEntity(name=NAME,
 			itemContentType = "vnd.android.cursor.item/" + FULL_NAME,
@@ -27,6 +28,10 @@ public class PeerRegistry extends ORMGenericContentProvider {
 	public static class Peer {
 
 		private Peer() {}
+
+		public static final int STATE_NEW = 0;
+		public static final int STATE_ADDED = 1;
+		public static final int STATE_REJECTED = 2;
 
 		/**
 		 * The default sort order for this table
@@ -45,8 +50,8 @@ public class PeerRegistry extends ORMGenericContentProvider {
 		@DbField(dbType=DatabaseFieldType.TEXT)
 		public static final String DEVICE = KEY_DEVICE;
 
-		@DbField(dbType=DatabaseFieldType.TEXT)
-		public static final String REPOSITORIES = KEY_REPOSITORIES;
+		@DbField(dbType=DatabaseFieldType.INTEGER)
+		public static final String STATE = KEY_STATE;
 
 		@DbField(dbType=DatabaseFieldType.TEXT)
 		public static final String EMAIL = KEY_EMAIL;

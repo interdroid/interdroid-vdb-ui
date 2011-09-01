@@ -40,12 +40,14 @@ public class EditPeerActivity extends TabActivity {
 			this.name = name;
 			this.email = email;
 			this.device = device;
+			this.state = Peer.STATE_ADDED;
 		}
 
 		public String name;
 		public String email;
 		public String device;
 		public Uri uri;
+		public int state;
 	}
 
 	@Override
@@ -124,12 +126,15 @@ public class EditPeerActivity extends TabActivity {
 				logger.warn("Request to add existing peer.");
 					peerInfo.uri = Uri.withAppendedPath(PeerRegistry.URI,
 							String.valueOf(c.getInt(c.getColumnIndex(Peer._ID))));
+					peerInfo.state = c.getInt(c.getColumnIndex(Peer.STATE));
 			} else {
 				logger.debug("Adding to peers: {} {}", peerInfo.name, peerInfo.email);
+				logger.debug("Device: {}", peerInfo.device);
 				ContentValues values = new ContentValues();
 				values.put(Peer.NAME, peerInfo.name);
 				values.put(Peer.EMAIL, peerInfo.email);
 				values.put(Peer.DEVICE, peerInfo.device);
+				values.put(Peer.STATE, Peer.STATE_NEW);
 				peerInfo.uri = context.getContentResolver().insert(PeerRegistry.URI, values);
 			}
 			if (c != null) {
@@ -143,6 +148,7 @@ public class EditPeerActivity extends TabActivity {
 				peerInfo.name = c.getString(c.getColumnIndex(Peer.NAME));
 				peerInfo.email = c.getString(c.getColumnIndex(Peer.EMAIL));
 				peerInfo.device = c.getString(c.getColumnIndex(Peer.DEVICE));
+				peerInfo.state = c.getInt(c.getColumnIndex(Peer.STATE));
 				c.close();
 			} else {
 				Toast.makeText(context, R.string.error_managing_peer, Toast.LENGTH_LONG).show();

@@ -72,7 +72,7 @@ public class ManagePeersActivity extends Activity implements OnItemClickListener
 		Cursor c = null;
 		ArrayList<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		try {
-			c = getContentResolver().query(PeerRegistry.URI, new String[]{Peer._ID, Peer.NAME, Peer.EMAIL, Peer.DEVICE}, null, null, null);
+			c = getContentResolver().query(PeerRegistry.URI, new String[]{Peer._ID, Peer.NAME, Peer.EMAIL, Peer.DEVICE}, Peer.STATE + "!=?", new String[] {String.valueOf(Peer.STATE_REJECTED)}, null);
 			if (c != null) {
 				int idIndex = c.getColumnIndex(Peer._ID);
 				int nameIndex = c.getColumnIndex(Peer.NAME);

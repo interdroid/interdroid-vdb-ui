@@ -24,12 +24,15 @@
 	<string name="error_invalid_remote">Error: Invalid remote name</string>
 	<string name="error_sync_in_progress">Error: Sync already in progress</string>
 	<string name="error_loading_remotes">Error: Unable to load remote information</string>
-	<string name="error_removing_remote">Error: Unable to remove remote from repository</string>
+	<string name="error_removing_remote">Error: Unable to remove remote from repository
+	</string>
 	<string name="error_cant_delete_nonlocal_branch">Error: You can only delete local branches</string>
 	<string name="error_delete_branch">Error: Unable to delete the branch</string>
 	<string name="error_invalid_version">Error: Invalid version selected</string>
 	<string name="error_toggling_is_public">Error: Unable to toggle repository state</string>
 	<string name="error_contacting_peer">Error: Unable to contact the peer</string>
+	<string name="error_editing_repo_schema">Error: Unable to edit repository schema</string>
+	<string name="error_initializing_database">Error: Unable to initialize the database</string>
 
 	<string name="label_name">Name:</string>
 	<string name="label_email">Email:</string>
@@ -72,9 +75,8 @@
 	<string name="title_branch_action">Actions For This Branch</string>
 	<string name="title_manage_peer">Manage Peer</string>
 
-	<string name="action_open_repo">Open Repository</string>
-	<string name="action_manage_repo">Manage Repository</string>
-	<string name="action_delete_repo">Delete Repository</string>
+	<string name="action_manage_repo">Manage</string>
+	<string name="action_delete_repo">Delete</string>
 	<string name="action_edit_peer">Edit Peer</string>
 	<string name="action_add_peer">Add Peer</string>
 	<string name="action_sync_peer">Sync Peer</string>
@@ -86,6 +88,9 @@
 	<string name="action_view_branch">Open</string>
 	<string name="action_add_branch">Create Branch</string>
 	<string name="action_delete_branch">Delete Branch</string>
+	<string name="action_open_repo_master">Open Master</string>
+	<string name="action_open_repo_branch_or_commit">Open Branch or Commit</string>
+	<string name="action_edit_repo_schema">Edit Schema</string>
 
 	<string name="git_service_started">VDB Git Service Running</string>
 	<string name="git_service_stopped">Stopped VDB Git Service</string>
@@ -96,10 +101,12 @@
 
 	<string name="perm_read_database">Read a VDB database</string>
 	<string name="perm_read_database_desc">Grants an application permission to read all
-		databases within the VDB system.</string>
+		databases within the VDB system.
+	</string>
 	<string name="perm_write_database">Write a VDB database</string>
 	<string name="perm_write_database_desc">Grants an application permission to write all
-		databases within the VDB system.</string>
+		databases within the VDB system.
+	</string>
 
 	<string name="sharing_preferences">Sharing Preferences</string>
 	<string name="pref_your_name">Name</string>
@@ -107,11 +114,15 @@
 	</string>
 	<string name="pref_your_email">Email Address</string>
 	<string name="pref_your_email_desc">Your email as you would like it to appear in
-		Commits</string>
+		Commits
+	</string>
 	<string name="pref_device">Device Name</string>
-	<string name="pref_device_desc">Your name for this device. This name must be unique across all devices running this software and using the same email address.</string>
+	<string name="pref_device_desc">Your name for this device. This name must be unique
+		across all devices running this software and using the same email
+		address.</string>
 	<string name="pref_sharing_enabled">Enable Sharing</string>
 	<string name="pref_sharing_enabled_desc">Enables the sharing background service to
-		synchronize your repositories with others.</string>
+		synchronize your repositories with others.
+	</string>
 	<string name="prefs_not_set">Preferences are not set!</string>
 </resources>

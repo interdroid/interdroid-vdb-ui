@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
