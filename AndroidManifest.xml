@@ -16,6 +16,7 @@
 	<uses-permission android:name="android.permission.CAMERA"></uses-permission>
 
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
+		<uses-library android:name="com.google.android.maps" />
 
 		<provider android:name="interdroid.vdb.content.VdbMainContentProvider"
 			android:authorities="interdroid.vdb.content" android:readPermission="interdroid.vdb.permission.READ_DATABASE"
@@ -35,14 +36,22 @@
 		</activity>
 
 		<activity android:name="interdroid.vdb.avro.view.UseCamera"
-		android:screenOrientation="landscape"
-		android:configChanges="keyboardHidden|orientation"
-		android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+			android:screenOrientation="landscape" android:configChanges="keyboardHidden|orientation"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 			<intent-filter>
 				<action android:name="android.media.action.IMAGE_CAPTURE" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
+
+		<activity android:name="interdroid.vdb.avro.view.LocationPicker"
+			android:configChanges="keyboardHidden|orientation">
+			<intent-filter>
+				<action android:name="android.intent.actions.PICK_LOCATION" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
 
 		<activity android:name="interdroid.vdb.avro.view.AvroBaseEditor">
 			<intent-filter>
