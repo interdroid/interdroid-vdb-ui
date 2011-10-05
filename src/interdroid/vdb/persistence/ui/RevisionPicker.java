@@ -1,7 +1,7 @@
 package interdroid.vdb.persistence.ui;
 
+import interdroid.vdb.Authority;
 import interdroid.vdb.R;
-import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
 import interdroid.vdb.persistence.ui.BranchExpandableListAdapter;
@@ -56,7 +56,7 @@ public class RevisionPicker extends Activity implements OnRevisionClickListener 
         }
 
         Uri repoUri = intent.getData();
-        if (!VdbMainContentProvider.AUTHORITY.equals(repoUri.getAuthority())) {
+        if (!Authority.VDB.equals(repoUri.getAuthority())) {
         	throw new IllegalArgumentException("Invalid authority " + repoUri.getAuthority());
         }
         List<String> pathSegments = repoUri.getPathSegments();

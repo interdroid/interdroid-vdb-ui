@@ -2,8 +2,8 @@ package interdroid.vdb.persistence.content;
 
 import android.net.Uri;
 
+import interdroid.vdb.Authority;
 import interdroid.vdb.content.EntityUriBuilder;
-import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.content.avro.AvroProviderRegistry;
 import interdroid.vdb.content.metadata.DatabaseFieldType;
 import interdroid.vdb.content.orm.DbEntity;
@@ -39,7 +39,7 @@ public class PeerRegistry extends ORMGenericContentProvider {
 		public static final String DEFAULT_SORT_ORDER = "modified DESC";
 
 		public static final Uri CONTENT_URI =
-			Uri.withAppendedPath(EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY, AvroProviderRegistry.NAMESPACE, "master"), AvroProviderRegistry.NAME);
+			Uri.withAppendedPath(EntityUriBuilder.branchUri(Authority.VDB, AvroProviderRegistry.NAMESPACE, "master"), AvroProviderRegistry.NAME);
 
 		@DbField(isID=true, dbType=DatabaseFieldType.INTEGER)
 		public static final String _ID = "_id";
@@ -62,6 +62,6 @@ public class PeerRegistry extends ORMGenericContentProvider {
 		super(NAMESPACE, Peer.class);
 	}
 
-	public static final Uri URI = Uri.withAppendedPath(EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY,
+	public static final Uri URI = Uri.withAppendedPath(EntityUriBuilder.branchUri(Authority.VDB,
 			NAMESPACE, "master"), NAME);
 }

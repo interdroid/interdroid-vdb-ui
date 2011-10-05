@@ -1,10 +1,10 @@
 package interdroid.vdb.persistence.ui;
 
 import interdroid.vdb.Actions;
+import interdroid.vdb.Authority;
 import interdroid.vdb.R;
 import interdroid.vdb.content.EntityUriBuilder;
 import interdroid.vdb.content.EntityUriMatcher;
-import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.content.EntityUriMatcher.MatchType;
 import interdroid.vdb.content.EntityUriMatcher.UriMatch;
 import interdroid.vdb.persistence.api.RemoteInfo;
@@ -386,7 +386,7 @@ public class ManageRemotesActivity extends ListActivity implements OnItemClickLi
 			items = new String[] {getString(R.string.action_edit_hub),
 					getString(R.string.action_sync_hub), getString(R.string.action_remove_hub)};
 			editIntent = new Intent(Intent.ACTION_EDIT,
-					EntityUriBuilder.remoteUri(VdbMainContentProvider.AUTHORITY, vdbRepo_.getName(), remote));
+					EntityUriBuilder.remoteUri(Authority.VDB, vdbRepo_.getName(), remote));
 		}
 
 		builder.setItems(items, new DialogInterface.OnClickListener() {

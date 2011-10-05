@@ -96,6 +96,12 @@
 			</intent-filter>
 		</service>
 
+		<service android:name=".content.avro.AvroRegistryService">
+			<intent-filter>
+				<action android:name="interdroid.vdb.REGISTER_SCHEMA" />
+			</intent-filter>
+		</service>
+
 		<activity android:name=".persistence.ui.RevisionPicker">
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />

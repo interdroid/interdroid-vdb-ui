@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 
 import interdroid.util.view.AsyncTaskWithProgressDialog;
 import interdroid.vdb.Actions;
+import interdroid.vdb.Authority;
 import interdroid.vdb.R;
 import interdroid.vdb.avro.AvroSchema;
 import interdroid.vdb.avro.view.AvroBaseEditor;
 import interdroid.vdb.avro.view.AvroBaseList;
 import interdroid.vdb.content.EntityUriBuilder;
-import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.content.VdbProviderRegistry;
 import android.app.ListActivity;
 import android.content.Intent;
@@ -119,7 +119,7 @@ public class ManageRepositoriesActivity extends ListActivity {
 		switch (item.getItemId()) {
 		case OPEN_MASTER:
 			try {
-				launchListActivity(EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY, repoName, "master"));
+				launchListActivity(EntityUriBuilder.branchUri(Authority.VDB, repoName, "master"));
 			} catch (Exception e) {
 				logger.error("Error opening repository", e);
 				Toast.makeText(ManageRepositoriesActivity.this, getString(R.string.error_opening_repo), Toast.LENGTH_LONG).show();
@@ -129,7 +129,7 @@ public class ManageRepositoriesActivity extends ListActivity {
 			try {
 				logger.debug("Launching pick activity for: {}", repoName);
 				startActivityForResult(new Intent(Intent.ACTION_PICK,
-						EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, repoName)),
+						EntityUriBuilder.repositoryUri(Authority.VDB, repoName)),
 						PICK_BRANCH);
 			} catch (Exception e) {
 				logger.error("Error opening repository", e);
@@ -140,7 +140,7 @@ public class ManageRepositoriesActivity extends ListActivity {
 			Cursor c = null;
 			try {
 				c = getContentResolver().query(
-						EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY, AvroSchema.NAMESPACE, "master/" + AvroSchema.RECORD_DEFINITION),
+						EntityUriBuilder.branchUri(Authority.VDB, AvroSchema.NAMESPACE, "master/" + AvroSchema.RECORD_DEFINITION),
 					new String[] {"_id"}, "namespace=?", new String[] {repoName}, null);
 				if (c != null && c.moveToFirst()) {
 					try {
@@ -164,7 +164,7 @@ public class ManageRepositoriesActivity extends ListActivity {
 			try {
 				logger.debug("Launching manage for: {}", repoName);
 				startActivity(new Intent(Actions.ACTION_MANAGE_REPOSITORY,
-						EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, repoName)));
+						EntityUriBuilder.repositoryUri(Authority.VDB, repoName)));
 			} catch (Exception e) {
 				logger.error("Error managing repository", e);
 				Toast.makeText(ManageRepositoriesActivity.this, getString(R.string.error_managing_repo), Toast.LENGTH_LONG).show();
@@ -186,7 +186,7 @@ public class ManageRepositoriesActivity extends ListActivity {
 		final String repoName = (String) repos.get(position).get(VdbProviderRegistry.REPOSITORY_NAME);
 
 		try {
-			launchListActivity(EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY, repoName, "master"));
+			launchListActivity(EntityUriBuilder.branchUri(Authority.VDB, repoName, "master"));
 		} catch (Exception e) {
 			logger.error("Error opening repository", e);
 			Toast.makeText(ManageRepositoriesActivity.this, getString(R.string.error_opening_repo), Toast.LENGTH_LONG).show();
@@ -231,7 +231,7 @@ public class ManageRepositoriesActivity extends ListActivity {
 	private void launchEditSchemaActivity(String id) {
 		logger.debug("Editing record: {}", id);
 		Intent addIntent = new Intent(id == null ? Intent.ACTION_INSERT : Intent.ACTION_EDIT,
-				EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY, AvroSchema.NAMESPACE, "master"));
+				EntityUriBuilder.branchUri(Authority.VDB, AvroSchema.NAMESPACE, "master"));
 		addIntent.putExtra(AvroBaseEditor.ENTITY, AvroSchema.RECORD_DEFINITION + (id == null ? "" : "/" + id));
 		addIntent.putExtra(AvroBaseEditor.SCHEMA, AvroSchema.RECORD.toString());
 		logger.debug("Adding Repository");

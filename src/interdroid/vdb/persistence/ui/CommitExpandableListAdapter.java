@@ -8,9 +8,9 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import interdroid.vdb.Authority;
 import interdroid.vdb.R;
 import interdroid.vdb.content.EntityUriBuilder;
-import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.persistence.api.VdbRepository;
 import interdroid.vdb.persistence.ui.BranchExpandableListAdapter.OnRevisionClickListener;
 
@@ -47,12 +47,12 @@ public class CommitExpandableListAdapter extends BaseExpandableListAdapter imple
 	private int mChildViewHeight;
 
 	private Uri getCommitUri(int childPosition) {
-		return EntityUriBuilder.commitUri(VdbMainContentProvider.AUTHORITY, mRepo.getName(), mCommits.get(childPosition).getName());
+		return EntityUriBuilder.commitUri(Authority.VDB, mRepo.getName(), mCommits.get(childPosition).getName());
 	}
 
 
 	private Uri getBranchUri() {
-		return EntityUriBuilder.branchUri(VdbMainContentProvider.AUTHORITY,mRepo.getName(), mBranchName);
+		return EntityUriBuilder.branchUri(Authority.VDB,mRepo.getName(), mBranchName);
 	}
 
 	@Override

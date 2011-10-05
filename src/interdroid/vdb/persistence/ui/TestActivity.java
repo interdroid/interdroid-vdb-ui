@@ -2,9 +2,9 @@ package interdroid.vdb.persistence.ui;
 
 
 import interdroid.vdb.Actions;
+import interdroid.vdb.Authority;
 import interdroid.vdb.R;
 import interdroid.vdb.content.EntityUriBuilder;
-import interdroid.vdb.content.VdbMainContentProvider;
 import interdroid.vdb.persistence.api.VdbRepositoryRegistry;
 import interdroid.vdb.persistence.impl.MergeHelper;
 import interdroid.vdb.persistence.impl.VdbRepositoryImpl;
@@ -80,7 +80,7 @@ public class TestActivity extends Activity {
 			Intent intent;
 
 			intent = new Intent(Actions.ACTION_MANAGE_REPOSITORY,
-					EntityUriBuilder.repositoryUri(VdbMainContentProvider.AUTHORITY, "google.notes"));
+					EntityUriBuilder.repositoryUri(Authority.VDB, "google.notes"));
 			startActivity(intent);
 
 			if (false) {
