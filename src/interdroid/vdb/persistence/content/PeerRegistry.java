@@ -5,6 +5,7 @@ import android.net.Uri;
 import interdroid.vdb.Authority;
 import interdroid.vdb.content.EntityUriBuilder;
 import interdroid.vdb.content.avro.AvroProviderRegistry;
+import interdroid.vdb.content.avro.AvroSchemaRegistrationHandler;
 import interdroid.vdb.content.metadata.DatabaseFieldType;
 import interdroid.vdb.content.orm.DbEntity;
 import interdroid.vdb.content.orm.DbField;
@@ -39,7 +40,11 @@ public class PeerRegistry extends ORMGenericContentProvider {
 		public static final String DEFAULT_SORT_ORDER = "modified DESC";
 
 		public static final Uri CONTENT_URI =
-			Uri.withAppendedPath(EntityUriBuilder.branchUri(Authority.VDB, AvroProviderRegistry.NAMESPACE, "master"), AvroProviderRegistry.NAME);
+			Uri.withAppendedPath(
+					EntityUriBuilder.branchUri(
+							Authority.VDB,
+							AvroSchemaRegistrationHandler.NAMESPACE, "master"),
+							AvroSchemaRegistrationHandler.NAME);
 
 		@DbField(isID=true, dbType=DatabaseFieldType.INTEGER)
 		public static final String _ID = "_id";
