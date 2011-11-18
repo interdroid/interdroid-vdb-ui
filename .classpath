@@ -20,5 +20,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.jgit"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/smartsockets"/>
 	<classpathentry kind="src" path="interdroid-util_src"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
