@@ -17,8 +17,6 @@
 	<classpathentry kind="src" path="slf4android_src"/>
 	<classpathentry kind="src" path="vdb_src"/>
 	<classpathentry kind="src" path="vdb-avro_src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.jgit"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/smartsockets"/>
 	<classpathentry kind="src" path="interdroid-util_src"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
