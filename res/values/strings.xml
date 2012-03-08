@@ -2,127 +2,129 @@
 
 <resources>
 
-	<string name="app_name">RAVEN</string>
+  <string name="app_name">RAVEN</string>
 
-	<string name="button_ok">OK</string>
+  <string name="button_ok">OK</string>
 
-	<string name="error_title">Error</string>
-	<string name="error_message">Error loading note</string>
-	<string name="error_invalid_uri">Error: Invalid URI</string>
-	<string name="error_fetching_repos">Error: Unable to fetch repository list</string>
-	<string name="error_opening_repo">Error: Unable to open repository list activity
-	</string>
-	<string name="error_managing_repo">Error: Unable to manage repository</string>
-	<string name="error_adding_branch">Error: Unable to add a branch</string>
-	<string name="error_activity_not_found">Error: No activity found to handle your request
-	</string>
-	<string name="error_no_name">Error: The user name is missing</string>
-	<string name="error_no_email">Error: The email address is missing</string>
-	<string name="error_toggling_peer">Error: Unable to toggle sharing of remote peer
-	</string>
-	<string name="error_managing_peer">Error: Unable to manage the peer</string>
-	<string name="error_invalid_remote">Error: Invalid remote name</string>
-	<string name="error_sync_in_progress">Error: Sync already in progress</string>
-	<string name="error_loading_remotes">Error: Unable to load remote information</string>
-	<string name="error_removing_remote">Error: Unable to remove remote from repository
-	</string>
-	<string name="error_cant_delete_nonlocal_branch">Error: You can only delete local branches</string>
-	<string name="error_delete_branch">Error: Unable to delete the branch</string>
-	<string name="error_invalid_version">Error: Invalid version selected</string>
-	<string name="error_toggling_is_public">Error: Unable to toggle repository state</string>
-	<string name="error_contacting_peer">Error: Unable to contact the peer</string>
-	<string name="error_editing_repo_schema">Error: Unable to edit repository schema</string>
-	<string name="error_initializing_database">Error: Unable to initialize the database</string>
+  <string name="error_title">Error</string>
+  <string name="error_message">Error loading note</string>
+  <string name="error_invalid_uri">Error: Invalid URI</string>
+  <string name="error_fetching_repos">Error: Unable to fetch repository list</string>
+  <string name="error_opening_repo">Error: Unable to open repository list activity
+  </string>
+  <string name="error_managing_repo">Error: Unable to manage repository</string>
+  <string name="error_adding_branch">Error: Unable to add a branch</string>
+  <string name="error_activity_not_found">Error: No activity found to handle your request
+  </string>
+  <string name="error_no_name">Error: The user name is missing</string>
+  <string name="error_no_email">Error: The email address is missing</string>
+  <string name="error_toggling_peer">Error: Unable to toggle sharing of remote peer
+  </string>
+  <string name="error_managing_peer">Error: Unable to manage the peer</string>
+  <string name="error_invalid_remote">Error: Invalid remote name</string>
+  <string name="error_sync_in_progress">Error: Sync already in progress</string>
+  <string name="error_loading_remotes">Error: Unable to load remote information</string>
+  <string name="error_removing_remote">Error: Unable to remove remote from repository
+  </string>
+  <string name="error_cant_delete_nonlocal_branch">Error: You can only delete local branches</string>
+  <string name="error_delete_branch">Error: Unable to delete the branch</string>
+  <string name="error_invalid_version">Error: Invalid version selected</string>
+  <string name="error_toggling_is_public">Error: Unable to toggle repository state</string>
+  <string name="error_contacting_peer">Error: Unable to contact the peer</string>
+  <string name="error_editing_repo_schema">Error: Unable to edit repository schema</string>
+  <string name="error_initializing_database">Error: Unable to initialize the database</string>
 
-	<string name="label_name">Name:</string>
-	<string name="label_email">Email:</string>
-	<string name="label_device">Device:</string>
-	<string name="label_repositories">Repositories:</string>
-	<string name="label_shared">Shared</string>
-	<string name="label_repository_name">Repository Name</string>
-	<string name="label_public_repository">Public Repository</string>
-	<string name="label_branches">Branches</string>
-	<string name="label_sharing">Sharing</string>
-	<string name="label_public">Public</string>
-	<string name="label_peers">Peers</string>
-	<string name="label_peer">Peer</string>
-	<string name="label_hub">Hub</string>
-	<string name="label_local_branches">Local Branches</string>
-	<string name="label_remote_branches">Remote Branches</string>
-	<string name="label_revision_history">Revision History</string>
-	<string name="label_no_items">No Data Items</string>
-	<string name="label_commits">Commits</string>
-	<string name="label_creation_time">Created:</string>
-	<string name="label_by">By:</string>
-	<string name="label_browse_remote">Browse Remote Repositories</string>
-	<string name="label_synchronize">Synchronize</string>
-	<string name="label_local_repositories">Local DBs</string>
-	<string name="label_remote_repositories">Remote DBs</string>
-	<string name="label_peer_info">Peer Info</string>
+  <string name="label_name">Name:</string>
+  <string name="label_email">Email:</string>
+  <string name="label_device">Device:</string>
+  <string name="label_repositories">Repositories:</string>
+  <string name="label_shared">Shared</string>
+  <string name="label_repository_name">Repository Name</string>
+  <string name="label_public_repository">Public Repository</string>
+  <string name="label_branches">Branches</string>
+  <string name="label_sharing">Sharing</string>
+  <string name="label_public">Public</string>
+  <string name="label_peers">Peers</string>
+  <string name="label_peer">Peer</string>
+  <string name="label_hub">Hub</string>
+  <string name="label_local_branches">Local Branches</string>
+  <string name="label_remote_branches">Remote Branches</string>
+  <string name="label_revision_history">Revision History</string>
+  <string name="label_no_items">No Data Items</string>
+  <string name="label_commits">Commits</string>
+  <string name="label_creation_time">Created:</string>
+  <string name="label_by">By:</string>
+  <string name="label_browse_remote">Browse Remote Repositories</string>
+  <string name="label_synchronize">Synchronize</string>
+  <string name="label_local_repositories">Local DBs</string>
+  <string name="label_remote_repositories">Remote DBs</string>
+  <string name="label_peer_info">Peer Info</string>
 
-	<string name="title_persistencebrowser">Persistence browser</string>
-	<string name="title_preferences">VDB Preferences</string>
-	<string name="title_manage_repositories">Manage Repositories</string>
-	<string name="title_repository_action">Actions For This Repository</string>
-	<string name="title_raven">RAVEN</string>
-	<string name="title_pick_branch">Pick a Branch</string>
-	<string name="title_manage_repository">Manage Repository:</string>
-	<string name="title_peer_manager">Peer Manager</string>
-	<string name="title_edit_peer">Edit Peer</string>
-	<string name="title_add_peer">Add Peer</string>
-	<string name="title_pick_peer">Pick a Peer</string>
-	<string name="title_peer_actions">Actions For This Peer</string>
-	<string name="title_branch_action">Actions For This Branch</string>
-	<string name="title_manage_peer">Manage Peer</string>
+  <string name="title_persistencebrowser">Persistence browser</string>
+  <string name="title_preferences">VDB Preferences</string>
+  <string name="title_manage_repositories">Manage Repositories</string>
+  <string name="title_repository_action">Actions For This Repository</string>
+  <string name="title_raven">RAVEN</string>
+  <string name="title_pick_branch">Pick a Branch</string>
+  <string name="title_manage_repository">Manage Repository:</string>
+  <string name="title_peer_manager">Peer Manager</string>
+  <string name="title_edit_peer">Edit Peer</string>
+  <string name="title_add_peer">Add Peer</string>
+  <string name="title_pick_peer">Pick a Peer</string>
+  <string name="title_peer_actions">Actions For This Peer</string>
+  <string name="title_branch_action">Actions For This Branch</string>
+  <string name="title_manage_peer">Manage Peer</string>
 
-	<string name="action_manage_repo">Manage</string>
-	<string name="action_delete_repo">Delete</string>
-	<string name="action_edit_peer">Edit Peer</string>
-	<string name="action_add_peer">Add Peer</string>
-	<string name="action_sync_peer">Sync Peer</string>
-	<string name="action_remove_peer">Remove Peer</string>
-	<string name="action_edit_hub">Edit Hub</string>
-	<string name="action_add_hub">Add Hub</string>
-	<string name="action_sync_hub">Sync Hub</string>
-	<string name="action_remove_hub">Remove Hub</string>
-	<string name="action_view_branch">Open</string>
-	<string name="action_add_branch">Create Branch</string>
-	<string name="action_delete_branch">Delete Branch</string>
-	<string name="action_open_repo_master">Open Master</string>
-	<string name="action_open_repo_branch_or_commit">Open Branch or Commit</string>
-	<string name="action_edit_repo_schema">Edit Schema</string>
+  <string name="action_manage_repo">Manage</string>
+  <string name="action_delete_repo">Delete</string>
+  <string name="action_edit_peer">Edit Peer</string>
+  <string name="action_add_peer">Add Peer</string>
+  <string name="action_sync_peer">Sync Peer</string>
+  <string name="action_remove_peer">Remove Peer</string>
+  <string name="action_edit_hub">Edit Hub</string>
+  <string name="action_add_hub">Add Hub</string>
+  <string name="action_sync_hub">Sync Hub</string>
+  <string name="action_remove_hub">Remove Hub</string>
+  <string name="action_view_branch">Open</string>
+  <string name="action_add_branch">Create Branch</string>
+  <string name="action_delete_branch">Delete Branch</string>
+  <string name="action_open_repo_master">Open Master</string>
+  <string name="action_open_repo_branch_or_commit">Open Branch or Commit</string>
+  <string name="action_edit_repo_schema">Edit Schema</string>
 
-	<string name="git_service_started">VDB Git Service Running</string>
-	<string name="git_service_stopped">Stopped VDB Git Service</string>
-	<string name="git_service_label">VDB Git Service</string>
-	<string name="git_service_set_prefs">Select to set VDB Git Service Prefs</string>
-	<string name="git_service_found_new">Found a new peer: </string>
-	<string name="git_service_click_to_browse">Click to browse their repositories.</string>
+  <string name="git_service_started">VDB Git Service Running</string>
+  <string name="git_service_stopped">Stopped VDB Git Service</string>
+  <string name="git_service_label">VDB Git Service</string>
+  <string name="git_service_set_prefs">Select to set VDB Git Service Prefs</string>
+  <string name="git_service_found_new">Found a new peer: </string>
+  <string name="git_service_click_to_browse">Click to browse their repositories.</string>
 
-	<string name="perm_read_database">Read a VDB database</string>
-	<string name="perm_read_database_desc">Grants an application permission to read all
-		databases within the VDB system.
-	</string>
-	<string name="perm_write_database">Write a VDB database</string>
-	<string name="perm_write_database_desc">Grants an application permission to write all
-		databases within the VDB system.
-	</string>
+  <string name="perm_read_database">Read a VDB database</string>
+  <string name="perm_read_database_desc">Grants an application permission to read all
+    databases within the VDB system.
+  </string>
+  <string name="perm_write_database">Write a VDB database</string>
+  <string name="perm_write_database_desc">Grants an application permission to write all
+    databases within the VDB system.
+  </string>
 
-	<string name="sharing_preferences">Sharing Preferences</string>
-	<string name="pref_your_name">Name</string>
-	<string name="pref_your_name_desc">Your name as you would like it to appear in Commits
-	</string>
-	<string name="pref_your_email">Email Address</string>
-	<string name="pref_your_email_desc">Your email as you would like it to appear in
-		Commits
-	</string>
-	<string name="pref_device">Device Name</string>
-	<string name="pref_device_desc">Your name for this device. This name must be unique
-		across all devices running this software and using the same email
-		address.</string>
-	<string name="pref_sharing_enabled">Enable Sharing</string>
-	<string name="pref_sharing_enabled_desc">Enables the sharing background service to
-		synchronize your repositories with others.
-	</string>
-	<string name="prefs_not_set">Preferences are not set!</string>
+  <string name="sharing_preferences">Sharing Preferences</string>
+  <string name="pref_your_name">Name</string>
+  <string name="pref_your_name_desc">Your name as you would like it to appear in Commits
+  </string>
+  <string name="pref_your_email">Email Address</string>
+  <string name="pref_your_email_desc">Your email as you would like it to appear in
+    Commits
+  </string>
+  <string name="pref_hubs">SmartSocket Hub Addresses</string>
+  <string name="pref_hubs_desc">Addresses of SmartSocket Hub you use to bootstrap your connections.</string>
+  <string name="pref_device">Device Name</string>
+  <string name="pref_device_desc">Your name for this device. This name must be unique
+    across all devices running this software and using the same email
+    address.</string>
+  <string name="pref_sharing_enabled">Enable Sharing</string>
+  <string name="pref_sharing_enabled_desc">Enables the sharing background service to
+    synchronize your repositories with others.
+  </string>
+  <string name="prefs_not_set">Preferences are not set!</string>
 </resources>

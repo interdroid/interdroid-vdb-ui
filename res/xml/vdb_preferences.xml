@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="@string/sharing_preferences">
-		<EditTextPreference android:name="name"
-			android:summary="@string/pref_your_name_desc" android:defaultValue=""
-			android:title="@string/pref_your_name" android:key="name"
-			android:persistent="true" />
-		<EditTextPreference android:name="email"
-			android:summary="@string/pref_your_email_desc" android:defaultValue=""
-			android:title="@string/pref_your_email" android:key="email"
-			android:dependency="name" android:persistent="true" />
-		<EditTextPreference android:name="device"
-			android:summary="@string/pref_device_desc" android:defaultValue=""
-			android:title="@string/pref_device" android:key="device"
-			android:dependency="email" android:persistent="true" />
-		<CheckBoxPreference android:name="sharingEnabled"
-			android:title="@string/pref_sharing_enabled" android:defaultValue="false"
-			android:summary="@string/pref_sharing_enabled_desc" android:key="sharingEnabled"
-			android:dependency="device" android:persistent="true" />
-	</PreferenceCategory>
+  <PreferenceCategory android:title="@string/sharing_preferences">
+    <EditTextPreference android:name="name"
+      android:summary="@string/pref_your_name_desc" android:defaultValue=""
+      android:title="@string/pref_your_name" android:key="name"
+      android:persistent="true" />
+    <EditTextPreference android:name="email"
+      android:summary="@string/pref_your_email_desc" android:defaultValue=""
+      android:title="@string/pref_your_email" android:key="email"
+      android:dependency="name" android:persistent="true" />
+    <EditTextPreference android:name="device"
+      android:summary="@string/pref_device_desc" android:defaultValue=""
+      android:title="@string/pref_device" android:key="device"
+      android:dependency="email" android:persistent="true" />
+    <CheckBoxPreference android:name="sharingEnabled"
+      android:title="@string/pref_sharing_enabled" android:defaultValue="false"
+      android:summary="@string/pref_sharing_enabled_desc" android:key="sharingEnabled"
+      android:dependency="device" android:persistent="true" />
+    <ListPreference android:name="hubs"
+        android:title="@string/pref_hubs" android:defaultValue=""
+        android:summary="@string/pref_hubs_desc" android:key="hubs"
+        android:persistent="true" />
+  </PreferenceCategory>
 </PreferenceScreen>
