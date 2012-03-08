@@ -22,18 +22,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class TestActivity extends Activity {
-	private static final Logger logger = LoggerFactory
-			.getLogger(TestActivity.class);
+    private static final Logger logger = LoggerFactory
+            .getLogger(TestActivity.class);
 
-	private static final int REQUEST_PICK_VERSION = 1;
+    private static final int REQUEST_PICK_VERSION = 1;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
-		// Start the GIT service in the background.
-		startService(new Intent("interdroid.vdb.GIT_SERVICE"));
+        // Start the GIT service in the background.
+        startService(new Intent("interdroid.vdb.GIT_SERVICE"));
 
         // Intent intent = new Intent(Intent.ACTION_PICK,
         //		Uri.parse("content://" + VdbMainContentProvider.AUTHORITY + "/notes"));
@@ -47,48 +47,46 @@ public class TestActivity extends Activity {
         intent.putExtra(VdbPreferences.PREF_EMAIL, "nick@sluggardy.net");
         intent.putExtra(VdbPreferences.PREF_NAME, "Nick Palmer");
         intent.putExtra(VdbPreferences.PREF_DEVICE, "Desire HD");
-		startActivity(intent);
-		finish();
-	}
+        startActivity(intent);
+        finish();
+    }
 
-	@Override
-	protected void onActivityResult (int requestCode, int resultCode, Intent data)
-	{
-		if (resultCode == RESULT_OK && requestCode == REQUEST_PICK_VERSION) {
-			TextView v = new TextView(this);
-			v.setText(data.getDataString());
-			setContentView(v);
-
-			try {
-				MergeHelper helper = new MergeHelper(
-						VdbRepositoryRegistry.getInstance().getRepository(this, "google.notes")
-						.getBranch("temp"));
-				//helper.diff2("google.notes", "google.notes");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			try {
-				VdbRepositoryImpl reg = (VdbRepositoryImpl)
-						VdbRepositoryRegistry.getInstance().getRepository(this, "google.notes");
-			} catch (IOException e) {
-				logger.error("Error getting repository", e);
-				Toast.makeText(this, R.string.error_opening_repo, Toast.LENGTH_LONG);
-			}
-
-			Intent intent;
-
-			intent = new Intent(Actions.ACTION_MANAGE_REPOSITORY,
-					EntityUriBuilder.repositoryUri(Authority.VDB, "google.notes"));
-			startActivity(intent);
-
-			if (false) {
-				Uri notesUri = Uri.withAppendedPath(data.getData(), "google.notes");
-
-				intent = new Intent(Intent.ACTION_PICK, notesUri);
-				startActivity(intent);
-			}
-		}
-	}
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data)
+    {
+//		if (resultCode == RESULT_OK && requestCode == REQUEST_PICK_VERSION) {
+//			TextView v = new TextView(this);
+//			v.setText(data.getDataString());
+//			setContentView(v);
+//
+//			try {
+//				MergeHelper helper = new MergeHelper();
+//				//helper.diff2("google.notes", "google.notes");
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//			try {
+//				VdbRepositoryImpl reg = (VdbRepositoryImpl)
+//						VdbRepositoryRegistry.getInstance().getRepository(this, "google.notes");
+//			} catch (IOException e) {
+//				logger.error("Error getting repository", e);
+//				Toast.makeText(this, R.string.error_opening_repo, Toast.LENGTH_LONG);
+//			}
+//
+//			Intent intent;
+//
+//			intent = new Intent(Actions.ACTION_MANAGE_REPOSITORY,
+//					EntityUriBuilder.repositoryUri(Authority.VDB, "google.notes"));
+//			startActivity(intent);
+//
+//			if (false) {
+//				Uri notesUri = Uri.withAppendedPath(data.getData(), "google.notes");
+//
+//				intent = new Intent(Intent.ACTION_PICK, notesUri);
+//				startActivity(intent);
+//			}
+//		}
+    }
 }
