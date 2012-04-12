@@ -190,13 +190,6 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".persistence.ui.TestActivity">
-			<intent-filter>
-				<action android:name="interdroid.vdb.action.TEST" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-
 		<activity android:name=".persistence.ui.EditPeerActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.EDIT" />
