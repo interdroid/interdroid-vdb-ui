@@ -16,7 +16,11 @@ import interdroid.vdb.avro.view.AvroBaseEditor;
 import interdroid.vdb.avro.view.AvroBaseList;
 import interdroid.vdb.content.EntityUriBuilder;
 import interdroid.vdb.content.VdbProviderRegistry;
+import interdroid.vdb.content.avro.AvroSchemaRegistrationHandler;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -141,7 +145,7 @@ public class ManageRepositoriesActivity extends ListActivity {
 			try {
 				c = getContentResolver().query(
 						EntityUriBuilder.branchUri(Authority.VDB, AvroSchema.NAMESPACE, "master/" + AvroSchema.RECORD_DEFINITION),
-					new String[] {"_id"}, "namespace=?", new String[] {repoName}, null);
+						new String[] {"_id"}, "namespace=?", new String[] {repoName}, null);
 				if (c != null && c.moveToFirst()) {
 					try {
 						launchEditSchemaActivity(c.getString(0));
@@ -171,8 +175,41 @@ public class ManageRepositoriesActivity extends ListActivity {
 			}
 			break;
 		case DELETE_REPO:
-			// TODO: Add support for deleting repositories
-			Toast.makeText(ManageRepositoriesActivity.this, "Not yet supported", Toast.LENGTH_LONG).show();
+			try {
+				logger.debug("Deleting repository: {}", repoName);
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage(R.string.action_confirm_delete_repo);
+				builder.setTitle(R.string.title_confirm_delete_repo);
+				builder.setPositiveButton(R.string.button_delete, new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						AvroSchemaRegistrationHandler.delete(
+								getBaseContext(), repoName);
+						Toast.makeText(ManageRepositoriesActivity.this,
+								getString(R.string.message_repo_deleted),
+								Toast.LENGTH_SHORT).show();
+						refreshList();
+					}
+
+				});
+				builder.setNegativeButton(R.string.button_cancel, new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(getBaseContext(),
+								getString(R.string.message_delete_canceled),
+								Toast.LENGTH_SHORT).show();
+					}
+
+				});
+				builder.create().show();
+			} catch (Exception e) {
+				logger.error("Error deleting repository", e);
+				Toast.makeText(ManageRepositoriesActivity.this,
+						getString(R.string.error_delete_repo),
+						Toast.LENGTH_LONG).show();
+			}
 			break;
 		default:
 			logger.error("Unknown context menu option: {}", info);
@@ -291,6 +328,7 @@ public class ManageRepositoriesActivity extends ListActivity {
 	}
 
 	private void refreshList() {
+		logger.debug("Refreshing list.");
 		List<Map<String, Object>> temp = getAllRepos();
 		repos.clear();
 		repos.addAll(temp);
