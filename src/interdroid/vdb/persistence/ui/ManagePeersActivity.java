@@ -38,6 +38,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import interdroid.util.DbUtil;
 import interdroid.vdb.R;
 import interdroid.vdb.persistence.content.PeerRegistry;
 import interdroid.vdb.persistence.content.PeerRegistry.Peer;
@@ -104,10 +105,10 @@ public class ManagePeersActivity extends Activity implements OnItemClickListener
 		try {
 			c = getContentResolver().query(PeerRegistry.URI, new String[]{Peer._ID, Peer.NAME, Peer.EMAIL, Peer.DEVICE}, Peer.STATE + "!=?", new String[] {String.valueOf(Peer.STATE_REJECTED)}, null);
 			if (c != null) {
-				int idIndex = c.getColumnIndex(Peer._ID);
-				int nameIndex = c.getColumnIndex(Peer.NAME);
-				int emailIndex = c.getColumnIndex(Peer.EMAIL);
-				int deviceIndex = c.getColumnIndex(Peer.DEVICE);
+				int idIndex =  DbUtil.getFieldIndex(c, Peer._ID);
+				int nameIndex =  DbUtil.getFieldIndex(c, Peer.NAME);
+				int emailIndex =  DbUtil.getFieldIndex(c, Peer.EMAIL);
+				int deviceIndex =  DbUtil.getFieldIndex(c, Peer.DEVICE);
 				while (c.moveToNext()) {
 					@SuppressWarnings({ "rawtypes", "unchecked" })
 					HashMap<String, Object> data = new HashMap();
