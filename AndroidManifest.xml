@@ -36,10 +36,14 @@
 
 		<activity android:name="interdroid.vdb.avro.view.AvroDBMaker">
 			<intent-filter>
-				<action android:name="interdroid.vdb.INIT_DB" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<data
-					android:mimeType="vnd.android.cursor.item/vnd.interdroid.vdb.content.avro.schemas.Record" />
+					<action android:name="interdroid.vdb.INIT_DB" />
+					<category android:name="android.intent.category.DEFAULT" />
+					<data android:mimeType="vnd.android.cursor.item/vnd.interdroid.vdb.content.avro.schemas.Record" />
+			</intent-filter>
+			<intent-filter>
+					<action android:name="interdroid.vdb.INIT_DB" />
+					<category android:name="android.intent.category.DEFAULT" />
+					<data android:mimeType="vnd.android.cursor.item/vnd.interdroid.vdb.content.avro.schemas.SimpleRecord" />
 			</intent-filter>
 		</activity>
 
