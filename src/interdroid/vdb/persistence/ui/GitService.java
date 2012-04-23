@@ -445,7 +445,10 @@ public class GitService extends Service {
 
 			// Unregister with the resolver
 			String socketName = getSocketName();
-			mSmartSocketsDaemon.getResolver().unregister(socketName);
+			NameResolver resolver = mSmartSocketsDaemon.getResolver();
+			if (resolver != null) {
+				resolver.unregister(socketName);
+			}
 
 			// Stop the daemon
 			stopSmartsocketsDaemon();
