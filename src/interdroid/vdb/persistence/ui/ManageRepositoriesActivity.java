@@ -58,13 +58,16 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ManageRepositoriesActivity extends ListActivity {
@@ -104,7 +107,18 @@ public class ManageRepositoriesActivity extends ListActivity {
 		repos = getAllRepos();
 		mAdapter = new SimpleAdapter(this, repos, R.layout.repo_item,
 				new String[] {VdbProviderRegistry.REPOSITORY_NAME}, new int[] {R.id.repoName});
-		setListAdapter(mAdapter);
+
+		// Set the empty view.
+		logger.debug("Setting empty view.");
+
+		TextView empty = new TextView(this);
+		empty.setText("Press Menu -> Add to create a new repository.");
+		empty.setGravity(Gravity.CENTER);
+		empty.setId(android.R.id.empty);
+		getListView().setEmptyView(empty);
+		((ViewGroup) getListView().getParent()).addView(empty);
+
+		getListView().setAdapter(mAdapter);
 	}
 
 	private void buildUI() {

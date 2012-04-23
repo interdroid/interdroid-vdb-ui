@@ -47,13 +47,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 // TODO: Need to change view when using ss:// protocol.
 public class ManagePeersActivity extends Activity implements OnItemClickListener {
@@ -97,6 +100,13 @@ public class ManagePeersActivity extends Activity implements OnItemClickListener
 				new String[] {Peer.NAME, Peer.EMAIL, Peer.DEVICE}, new int[] {R.id.peer_name, R.id.peer_email, R.id.peer_device}));
 		list.setClickable(true);
 		list.setOnItemClickListener(this);
+
+		// Set the empty view.
+		TextView empty = new TextView(this);
+		empty.setText("Peers are added automatically as they are discovered.");
+		empty.setGravity(Gravity.CENTER);
+		list.setEmptyView(empty);
+		((ViewGroup) list.getParent()).addView(empty);
 	}
 
 	public List<Map<String, Object>> getAllPeers() {
