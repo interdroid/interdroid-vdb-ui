@@ -147,7 +147,7 @@ public class ManageRepositoriesActivity extends ListActivity {
 		menu.setHeaderTitle(getString(R.string.title_repository_action));
 		menu.add(0, OPEN_MASTER, 0, getString(R.string.action_open_repo_master));
 		menu.add(0, OPEN_BRANCH, 0, getString(R.string.action_open_repo_branch_or_commit));
-		menu.add(0, EDIT_SCHEMA, 0, getString(R.string.action_edit_repo_schema));
+//		menu.add(0, EDIT_SCHEMA, 0, getString(R.string.action_edit_repo_schema));
 		menu.add(0, MANAGE_REPO, 0, getString(R.string.action_manage_repo));
 		menu.add(0, DELETE_REPO, 0, getString(R.string.action_delete_repo));
 	}
