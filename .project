@@ -30,26 +30,4 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>interdroid-util_src</name>
-			<type>2</type>
-			<locationURI>_android_interdroid_util_3028128f/src</locationURI>
-		</link>
-		<link>
-			<name>slf4android_src</name>
-			<type>2</type>
-			<locationURI>_android_slf4android_eb6193e8/src</locationURI>
-		</link>
-		<link>
-			<name>vdb-avro_src</name>
-			<type>2</type>
-			<locationURI>_android_vdb_avro_359cc3eb/src</locationURI>
-		</link>
-		<link>
-			<name>vdb_src</name>
-			<type>2</type>
-			<locationURI>_android_vdb_1c774/src</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>
