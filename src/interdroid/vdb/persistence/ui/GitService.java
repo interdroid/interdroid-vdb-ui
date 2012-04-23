@@ -66,7 +66,6 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
@@ -108,7 +107,8 @@ public class GitService extends Service {
 	private SharedPreferences mPrefs;
 	private SharedPreferences.OnSharedPreferenceChangeListener mSharedPrefsChangeListener;
 
-	private MulticastLock mLock;
+	// TODO: What to do on 1.5
+//	private MulticastLock mLock;
 
 	// Register handlers so we start/stop/restart stuff at the right times
 	private BroadcastReceiver mBackgroundDataChangedListener = new BroadcastReceiver() {
@@ -260,20 +260,20 @@ public class GitService extends Service {
 	}
 
 	private synchronized void getMulticastLock() {
-		logger.info("Turning on multicast packet processing.");
-		WifiManager wifi =
-				(WifiManager)getSystemService(android.content.Context.WIFI_SERVICE);
-		mLock = wifi.createMulticastLock("GitServiceLock");
-		mLock.setReferenceCounted(false);
-		mLock.acquire();
-		logger.debug("Got multicast lock.");
+//		logger.info("Turning on multicast packet processing.");
+//		WifiManager wifi =
+//				(WifiManager)getSystemService(android.content.Context.WIFI_SERVICE);
+//		mLock = wifi.createMulticastLock("GitServiceLock");
+//		mLock.setReferenceCounted(false);
+//		mLock.acquire();
+//		logger.debug("Got multicast lock.");
 	}
 
 	private synchronized void releaseMulticastLock() {
-		if (mLock != null) {
-			logger.info("Releasing multicast lock.");
-			mLock.release();
-		}
+//		if (mLock != null) {
+//			logger.info("Releasing multicast lock.");
+//			mLock.release();
+//		}
 	}
 
 	private boolean isConfigured() {
@@ -386,13 +386,13 @@ public class GitService extends Service {
 		}
 	}
 
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		logger.debug("Received start id {} : {}", + startId, intent);
-		// We want this service to continue running until it is explicitly
-		// stopped, so return sticky.
-		return START_STICKY;
-	}
+//	@Override
+//	public int onStartCommand(Intent intent, int flags, int startId) {
+//		logger.debug("Received start id {} : {}", + startId, intent);
+//		// We want this service to continue running until it is explicitly
+//		// stopped, so return sticky.
+//		return START_STICKY;
+//	}
 
 	@Override
 	public void onDestroy() {
@@ -509,9 +509,9 @@ public class GitService extends Service {
 		CharSequence text = getText(R.string.git_service_started);
 
 		// Set the icon, scrolling text and timestamp
-		Notification notification = new Notification(R.drawable.git, text,
+		Notification notification = new Notification(R.drawable.raven_logo, text,
 				System.currentTimeMillis());
-		notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+//		notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
 		// The PendingIntent to launch our activity if the user selects this notification
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
@@ -528,7 +528,7 @@ public class GitService extends Service {
 	private void showNewRemoteNotification(String userName, String email, String device) {
 
 		// Set the icon, scrolling text and timestamp
-		Notification notification = new Notification(R.drawable.git, userName,
+		Notification notification = new Notification(R.drawable.raven_logo, userName,
 				System.currentTimeMillis());
 
 		// The PendingIntent to launch our activity if the user selects this notification
@@ -546,14 +546,15 @@ public class GitService extends Service {
 		// Send the notification.
 		logger.debug("New peer notification: {} {}", device, email);
 		logger.debug("Showing new peer notification: {}", userName.hashCode() + 11 * device.hashCode());
-		mNotificationManager.notify("new_peer", userName.hashCode() + 11 * device.hashCode(), notification);
+//		mNotificationManager.notify("new_peer", userName.hashCode() + 11 * device.hashCode(), notification);
+		mNotificationManager.notify(userName.hashCode() + 11 * device.hashCode(), notification);
 	}
 
 	private void showPrefsNotification() {
 		CharSequence text = getText(R.string.prefs_not_set);
 
 		// Set the icon, scrolling text and timestamp
-		Notification notification = new Notification(R.drawable.git, text,
+		Notification notification = new Notification(R.drawable.raven_logo, text,
 				System.currentTimeMillis());
 
 		// The PendingIntent to launch our activity if the user selects this notification
