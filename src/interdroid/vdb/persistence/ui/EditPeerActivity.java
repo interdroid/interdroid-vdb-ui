@@ -32,6 +32,7 @@ package interdroid.vdb.persistence.ui;
 
 import java.net.URISyntaxException;
 
+import interdroid.util.DbUtil;
 import interdroid.vdb.Actions;
 import interdroid.vdb.R;
 import interdroid.vdb.persistence.api.RemoteInfo;
@@ -155,8 +156,8 @@ public class EditPeerActivity extends TabActivity {
 			if (c != null && c.moveToFirst()) {
 				logger.warn("Request to add existing peer.");
 					peerInfo.uri = Uri.withAppendedPath(PeerRegistry.URI,
-							String.valueOf(c.getInt(c.getColumnIndex(Peer._ID))));
-					peerInfo.state = c.getInt(c.getColumnIndex(Peer.STATE));
+							String.valueOf(c.getInt( DbUtil.getFieldIndex(c, Peer._ID))));
+					peerInfo.state = c.getInt( DbUtil.getFieldIndex(c, Peer.STATE));
 			} else {
 				logger.debug("Adding to peers: {} {}", peerInfo.name, peerInfo.email);
 				logger.debug("Device: {}", peerInfo.device);
@@ -175,10 +176,10 @@ public class EditPeerActivity extends TabActivity {
 			peerInfo.uri = uri;
 			Cursor c = context.getContentResolver().query(uri, null, null, null, null);
 			if (c != null && c.getCount() == 1 && c.moveToFirst()) {
-				peerInfo.name = c.getString(c.getColumnIndex(Peer.NAME));
-				peerInfo.email = c.getString(c.getColumnIndex(Peer.EMAIL));
-				peerInfo.device = c.getString(c.getColumnIndex(Peer.DEVICE));
-				peerInfo.state = c.getInt(c.getColumnIndex(Peer.STATE));
+				peerInfo.name = c.getString(DbUtil.getFieldIndex(c, Peer.NAME));
+				peerInfo.email = c.getString(DbUtil.getFieldIndex(c, Peer.EMAIL));
+				peerInfo.device = c.getString(DbUtil.getFieldIndex(c, Peer.DEVICE));
+				peerInfo.state = c.getInt(DbUtil.getFieldIndex(c, Peer.STATE));
 				c.close();
 			} else {
 				Toast.makeText(context, R.string.error_managing_peer, Toast.LENGTH_LONG).show();
